@@ -7,15 +7,15 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
+//import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
 
 @Data //notacion para generar gettes y settes
 @Entity
-@Table(name= "empleado", uniqueConstraints={ //nombre de la tabla y le decimos que el teelfono sera unico para cada empleado
-    @UniqueConstraint(columnNames = {"telefono"})})
+@Table(name= "empleado")
+//, uniqueConstraints={ //nombre de la tabla y le decimos que el teelfono sera unico para cada empleado
+  //  @UniqueConstraint(columnNames = {"telefono"})})
 
 public class EmpleadoEntity {
     
