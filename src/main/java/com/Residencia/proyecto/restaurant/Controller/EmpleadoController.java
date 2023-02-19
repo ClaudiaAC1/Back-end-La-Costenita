@@ -3,7 +3,6 @@ package com.Residencia.proyecto.restaurant.Controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -72,7 +71,7 @@ public class EmpleadoController{
      * @return 
      */
     @PostMapping("/")
-    public ResponseEntity<EmpleadoEntity> saveEmpleado(@Valid @RequestBody EmpleadoEntity empleado){
+    public ResponseEntity<EmpleadoEntity> saveEmpleado(@RequestBody @Valid EmpleadoEntity empleado){
         //, BindingResult bindingResult
         // CustomResponse customResponse = new CustomResponse();
 

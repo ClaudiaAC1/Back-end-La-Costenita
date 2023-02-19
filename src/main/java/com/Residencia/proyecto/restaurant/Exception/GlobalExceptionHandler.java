@@ -11,12 +11,11 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
-import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import com.Residencia.proyecto.restaurant.Utils.CustomResponse;
 
-@RestControllerAdvice //anotacion para manejar excepciones originadas en el rescontroller
-public class GlobalExceptionHandler extends ResponseEntityExceptionHandler{
+@RestControllerAdvice //anotacion para manejar excepciones originadas en el restcontroller
+public class GlobalExceptionHandler {
 
     
     /**
@@ -51,19 +50,20 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler{
      * @return los detalles de la excepcion
      */
 
-    @ResponseStatus(code = HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public Map<String, String> handleMethodArgumentNotValid(MethodArgumentNotValidException ex) {
-            Map<String, String> errores = new HashMap<>();
-            ex.getBindingResult().getAllErrors().forEach((error) -> {
-                String nombreCampo = ((FieldError) error).getField();
-                String mensaje = error.getDefaultMessage();
-
-                errores.put(nombreCampo, mensaje);
-            });
-
-            return errores;
-    }
+     @ResponseStatus(code = HttpStatus.BAD_REQUEST)
+     @ExceptionHandler(MethodArgumentNotValidException.class)
+     public Map<String, String> handleMethodArgumentNotValid(MethodArgumentNotValidException ex) {
+             Map<String, String> errores = new HashMap<String, String>();
+             ex.getBindingResult().getAllErrors().forEach((error) -> {
+                 String nombreCampo = ((FieldError) error).getField();
+                 String mensaje = error.getDefaultMessage();
+ 
+                 errores.put(nombreCampo, mensaje);
+             });
+ 
+             return errores;
+     }
+        
 
 
 
