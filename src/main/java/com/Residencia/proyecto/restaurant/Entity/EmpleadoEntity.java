@@ -35,18 +35,22 @@ public class EmpleadoEntity {
     private String telefono;
 
     @Column
-    private Byte status ;
+    private Byte status ; //manejar con booleando
 
     @Column
     private Double sueldo;
     
-    
-    public EmpleadoEntity(String nombre, String telefono, String apellidos, Byte status, Double sueldo){
+    //CODIGO DE ACCESO
+    @Column
+    private String codigoAcceso;
+
+    public EmpleadoEntity(String nombre, String telefono, String apellidos, Byte status, Double sueldo, String codigoAcceso){
         this.nombre = nombre;
         this.apellidos = apellidos;
         this.telefono = telefono;
         this.status = status;
         this.sueldo =  sueldo;
+        this.codigoAcceso =  codigoAcceso;
     }
 
     public EmpleadoEntity(){}

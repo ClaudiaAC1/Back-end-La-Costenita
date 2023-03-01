@@ -11,6 +11,8 @@ public interface EmpleadoService {
 
     public Optional<EmpleadoEntity> getEmpleado(Long id);
 
+    public Optional<EmpleadoEntity> getEmpleado(String nombre);
+
     public void saveEmpleado(EmpleadoEntity empleado); 
 
     public void deleteEmpleado(EmpleadoEntity empleado); 

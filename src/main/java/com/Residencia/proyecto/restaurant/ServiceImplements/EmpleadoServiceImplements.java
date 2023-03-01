@@ -54,4 +54,10 @@ public class EmpleadoServiceImplements implements EmpleadoService {
     }
 
 
+    @Override
+    public Optional<EmpleadoEntity> getEmpleado(String nombre) {
+        return empleadoDao.findByNombre(nombre);    
+    }
+
+
 }

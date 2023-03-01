@@ -3,7 +3,6 @@ package com.Residencia.proyecto.restaurant.Controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,13 +22,13 @@ import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/employee")
-@CrossOrigin(origins = "*")
+//@CrossOrigin(origins = "*")
 
 // @Slf4j
 public class EmpleadoController {
 
     @Autowired
-    EmpleadoService empleadoService;
+    private EmpleadoService empleadoService;
 
     /***
      * Obtener la lista de empleados resgitrados en la base de datos
@@ -44,6 +43,31 @@ public class EmpleadoController {
         return customResponse;
 
     }
+
+    @GetMapping("name/{nombre}")
+    public CustomResponse getEmpleadoNombre(@PathVariable String nombre) {
+
+        CustomResponse customResponse = new CustomResponse();
+        customResponse.setData(empleadoService.getEmpleado(nombre));
+
+        if (customResponse.getData().hashCode() == 0) {
+            throw new BlogAppException(HttpStatus.BAD_REQUEST, "Sin registro de ese nombre");
+
+        } else {
+            throw new BlogAppException(HttpStatus.OK, "ok", (Object) customResponse.getData());
+
+        }
+    }
+        // @GetMapping("")
+        // public ResponseEntity<List<EmpleadoEntity>> getEmpleados() {
+
+        //     // CustomResponse customResponse = new CustomResponse();
+        //     // customResponse.setData(empleadoService.getEmpleados());
+        //     // return customResponse;
+
+        //     return new ResponseEntity<>(empleadoService.getEmpleados(), HttpStatus.OK);
+
+        // }
 
     /**
      * Obtener empleado con base a su id
@@ -61,7 +85,7 @@ public class EmpleadoController {
             throw new BlogAppException(HttpStatus.BAD_REQUEST, "Sin registro de ese id");
 
         } else {
-            throw new BlogAppException(HttpStatus.ACCEPTED, "ok", (Object) customResponse.getData());
+            throw new BlogAppException(HttpStatus.OK, "ok", (Object) customResponse.getData());
 
         }
     }
@@ -78,7 +102,7 @@ public class EmpleadoController {
         empleadoService.saveEmpleado(empleado);
         customResponse.setData("Empleado " + empleado.getNombre() + " registrado correctamente");
         customResponse.setHttpCode(HttpStatus.CREATED.value());
-        customResponse.setMensage("Creado exitosamente");
+        customResponse.setMensage(HttpStatus.CREATED.name());
 
         return new ResponseEntity<CustomResponse>(customResponse, HttpStatus.CREATED);        
     }
@@ -90,7 +114,7 @@ public class EmpleadoController {
      * @return
      */
     @PutMapping("/{id}")
-    public CustomResponse updateEmpleado(@RequestBody EmpleadoEntity empleado, @PathVariable Long id) {
+    public ResponseEntity<CustomResponse> updateEmpleado(@RequestBody EmpleadoEntity empleado, @PathVariable Long id) {
         CustomResponse customResponse = new CustomResponse();
         EmpleadoEntity m = empleadoService.getEmpleado(id).get();
 
@@ -99,10 +123,14 @@ public class EmpleadoController {
         m.setTelefono(empleado.getTelefono());
         m.setStatus(empleado.getStatus());
         m.setSueldo(empleado.getSueldo());
+        m.setCodigoAcceso(empleado.getCodigoAcceso());
 
         empleadoService.updateEmpleado(m, id);
-        customResponse.setData("mesero " + empleado.getNombre() + " actualizado correctamente");
-        return customResponse;
+        customResponse.setData("Empleado " + empleado.getNombre() + " actualizado correctamente");
+        customResponse.setHttpCode(HttpStatus.CREATED.value());
+        customResponse.setMensage(HttpStatus.CREATED.name());
+        
+        return new ResponseEntity<CustomResponse>(customResponse, HttpStatus.CREATED); 
     }
 
 }
