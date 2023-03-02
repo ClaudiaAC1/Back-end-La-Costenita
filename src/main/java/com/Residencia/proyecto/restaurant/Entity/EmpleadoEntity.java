@@ -35,7 +35,7 @@ public class EmpleadoEntity {
     private String telefono;
 
     @Column
-    private Byte status ; //manejar con booleando
+    private Byte status ; //1:activo, 2:inactivo
 
     @Column
     private Double sueldo;

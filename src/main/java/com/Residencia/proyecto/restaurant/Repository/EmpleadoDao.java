@@ -9,4 +9,7 @@ import java.util.Optional;
 
 public interface EmpleadoDao  extends CrudRepository<EmpleadoEntity, Long>{
     Optional<EmpleadoEntity> findByNombre(String nombre);
+
+    Optional<EmpleadoEntity> findByTelefono(String telefono);
+
 }

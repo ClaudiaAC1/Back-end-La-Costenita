@@ -96,7 +96,7 @@ public class MesaController {
         customResponse.setHttpCode(HttpStatus.CREATED.value());
         customResponse.setMensage(HttpStatus.CREATED.name());
 
-        return new ResponseEntity<CustomResponse>(customResponse, HttpStatus.CREATED);        
+        return new ResponseEntity<>(customResponse, HttpStatus.CREATED);        
     
     }
 
@@ -120,7 +120,7 @@ public class MesaController {
         customResponse.setHttpCode(HttpStatus.CREATED.value());
         customResponse.setMensage(HttpStatus.CREATED.name());
         
-        return new ResponseEntity<CustomResponse>(customResponse, HttpStatus.CREATED); 
+        return new ResponseEntity<>(customResponse, HttpStatus.CREATED); 
     }
 
     @DeleteMapping("{id}")
@@ -128,7 +128,7 @@ public class MesaController {
         CustomResponse customResponse = new CustomResponse();
         mesaService.deleteMesa(id);
 
-        return new ResponseEntity<CustomResponse>(customResponse, HttpStatus.OK);  
+        return new ResponseEntity<>(customResponse, HttpStatus.OK);  
 
     }   
 
