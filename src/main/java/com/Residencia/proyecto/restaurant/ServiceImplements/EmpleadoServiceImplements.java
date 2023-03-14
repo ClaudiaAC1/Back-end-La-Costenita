@@ -8,7 +8,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.Residencia.proyecto.restaurant.Entity.EmpleadoEntity;
+import com.Residencia.proyecto.restaurant.Entity.RolEntity;
 import com.Residencia.proyecto.restaurant.Repository.EmpleadoDao;
+import com.Residencia.proyecto.restaurant.Repository.RolDao;
 import com.Residencia.proyecto.restaurant.Services.EmpleadoService;
 
 @Service
@@ -17,19 +19,27 @@ public class EmpleadoServiceImplements implements EmpleadoService {
     @Autowired
     private EmpleadoDao empleadoDao;
 
+    @Autowired
+    private RolDao rolDao;
 
-    /***
-     *  metodo que interractua con la bd para consultar los empleados
+    /**
+     * *
+     * metodo que interractua con la bd para consultar los empleados
+     *
+     * @return
      */
     @Override
     @Transactional(readOnly = true)
     public List<EmpleadoEntity> getEmpleados() {
-        return  (List<EmpleadoEntity>) empleadoDao.findAll();
+        return (List<EmpleadoEntity>) empleadoDao.findAll();
     }
 
-    
-    /***
-     *  metodo que interractua con la bd para el empleado con base a su id
+    /**
+     * *
+     * metodo que interractua con la bd para el empleado con base a su id
+     *
+     * @param id
+     * @return
      */
     @Override
     @Transactional(readOnly = true)
@@ -37,45 +47,56 @@ public class EmpleadoServiceImplements implements EmpleadoService {
         return empleadoDao.findById(id);
     }
 
-
-    /***
-     *  metodo que interractua con la bd para el empleado con base a su nombre
+    /**
+     * *
+     * metodo que interractua con la bd para el empleado con base a su nombre
+     *
+     * @param nombre
+     * @return
      */
     @Override
     public Optional<EmpleadoEntity> getEmpleadoByNombre(String nombre) {
-        return empleadoDao.findByNombre(nombre);    
+        return empleadoDao.findByNombre(nombre);
     }
 
-
-    /***
-     *  metodo que interractua con la bd para el empleado con base a su telefono
+    /**
+     * *
+     * metodo que interractua con la bd para el empleado con base a su telefono
+     *
+     * @param telefono
+     * @return
      */
     @Override
     public Optional<EmpleadoEntity> getEmpleadoByTelefono(String telefono) {
-        return empleadoDao.findByTelefono(telefono);    
+        return empleadoDao.findByTelefono(telefono);
     }
-    
 
-    /***
-     *  metodo que interractua con la bd para guardar un empleado 
+    /**
+     * *
+     * metodo que interractua con la bd para guardar un empleado
+     *
+     * @param empleado
+     * @return
      */
     @Override
     //@Transactional
     public boolean saveEmpleado(EmpleadoEntity empleado) {
         //si existe el numero de teelfono ya en algun usuario
         // que no permita guardarlo
-        
-        if(empleadoDao.findByTelefono(empleado.getTelefono()).hashCode() == 0){
+
+        if (empleadoDao.findByTelefono(empleado.getTelefono()).hashCode() == 0) {
             empleadoDao.save(empleado);
             return true;
         }
         return false;
-        
+
     }
 
-
-    /***
-     *  metodo que interractua con la bd para eliminar un empleado 
+    /**
+     * *
+     * metodo que interractua con la bd para eliminar un empleado
+     *
+     * @param empleado
      */
     @Override
     @Transactional
@@ -83,52 +104,41 @@ public class EmpleadoServiceImplements implements EmpleadoService {
         empleadoDao.delete(empleado);
     }
 
-    
-    /***
-     *  metodo que interractua con la bd para actualizar un empleado 
+    /**
+     * *
+     * metodo que interractua con la bd para actualizar un empleado
+     *
+     * @param empleado
+     * @param id
      */
     @Override
     @Transactional
     public void updateEmpleado(EmpleadoEntity empleado, Long id) {
-        EmpleadoEntity m = empleadoDao.findById(id).get();
-
-        m.setNombre(empleado.getNombre());
-        m.setApellidos(empleado.getApellidos());
-        m.setTelefono(empleado.getTelefono());
-        m.setStatus(empleado.getStatus());
-        m.setSueldo(empleado.getSueldo());
-        m.setCodigoAcceso(empleado.getCodigoAcceso());
+        Optional<EmpleadoEntity> m = empleadoDao.findById(id);
+        Optional<RolEntity> r =  rolDao.findById(empleado.getRol().getId());
         
+        empleado.setId(m.get().getId());
+        empleado.setRol(r.get());
+        empleadoDao.save(empleado);
+
     }
 
-    /***
-     *  metodo que interractua con la bd y busca el uasuario con base al id 
-     * para comparar el codigo de acceso del empleado con el que recibe 
+    /**
+     * *
+     * metodo que interractua con la bd y busca el uasuario con base al id para
+     * comparar el codigo de acceso del empleado con el que recibe
+     *
+     * @param id
+     * @param codigoAcceso
+     * @return
      */
     @Override
-    public boolean validCodigoAcceso(Long id, String codigoAcceso){
+    public boolean validCodigoAcceso(Long id, String codigoAcceso) {
 
         EmpleadoEntity empleado = empleadoDao.findById(id).get();
         System.out.println(empleado.getCodigoAcceso());
 
-        if(empleado.getCodigoAcceso().equals(codigoAcceso) )
-            return true;
-        else{
-            return false;
-        }
-        
+        return empleado.getCodigoAcceso().equals(codigoAcceso);
+
     }
-
-
-    /***
-     * localhost:8080/empleoyee/valid/1
-     * 
-     * {
-     *  codigoAcceso:"1234"
-     * }
-     * 
-     * 
-     */
-    
-
 }

@@ -4,24 +4,24 @@ import java.util.LinkedList;
 
 public class CustomResponse {
 
-    private Integer httpCode;
+    private Integer Status;
     private Object data;
     private String mensage;
     
     
     public CustomResponse(){
-        this.httpCode = 200;
+        this.Status = 200;
 	    data = new LinkedList<>();
 	    this.mensage = "Ok";
     }    
     
 
     public Integer getHttpCode() {
-        return httpCode;
+        return Status;
     }
 
     public void setHttpCode(Integer httpCode) {
-        this.httpCode = httpCode;
+        this.Status = httpCode;
     }
 
     public Object getData() {

@@ -1,0 +1,150 @@
+relacion OonetoMany
+
+
+Producto-- n-------- 1--categorias
+
+@RestController
+@RequestMapping("/category")
+public class CategoriaController {
+
+    @Autowired
+    //private CategoriaService categoriaService;
+    private CategoriaDao categoriaDao;
+
+    @GetMapping("")
+    public ResponseEntity<Page<CategoriaEntity>> listarCategorias(Pageable pageable){        
+
+        return ResponseEntity.ok(categoriaDao.findAll(pageable));
+    }
+
+    @PostMapping("")
+    public ResponseEntity<CategoriaEntity> guardaCategoria(@Valid @RequestBody CategoriaEntity categoria){
+        CategoriaEntity c = categoriaDao.save(categoria);
+        URI ubicacion = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+        .buildAndExpand(c.getId()).toUri();
+
+        return ResponseEntity.created(ubicacion).body(c);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<CategoriaEntity> actualizarCategoria(@PathVariable Long id,@Valid @RequestBody CategoriaEntity categoria){
+        Optional<CategoriaEntity> c = categoriaDao.findById(id);
+
+        if(!c.isPresent()){
+            return ResponseEntity.unprocessableEntity().build();
+        }
+        categoria.setId(c.get().getId());
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("{id}")
+    public ResponseEntity<CategoriaEntity> eliminarCategoria(@PathVariable Long id){
+        Optional<CategoriaEntity> c = categoriaDao.findById(id);
+
+        if(!c.isPresent()){
+            return ResponseEntity.unprocessableEntity().build();
+        }
+        categoriaDao.delete(c.get());
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<CategoriaEntity> obtenerCategoriaId(@PathVariable Long id){
+        Optional<CategoriaEntity> c = categoriaDao.findById(id);
+
+        if(!c.isPresent()){
+            return ResponseEntity.unprocessableEntity().build();
+        }
+
+        return ResponseEntity.ok(c.get());
+    }
+}
+
+
+
+
+
+@RestController
+@RequestMapping("/product")
+public class ProductoController {
+
+    @Autowired
+    private CategoriaDao categoriaDao;
+
+    @Autowired
+    private ProductoDao productoDao;
+
+    @GetMapping("")
+    public ResponseEntity<Page<ProductoEntity>> listarProductos(Pageable pageable){        
+
+        return ResponseEntity.ok(productoDao.findAll(pageable));
+    } 
+
+
+    // @GetMapping("")
+    // public ResponseEntity<Page<ProductoEntity>> listarProductos(Pageable pageable){        
+
+    //     return ResponseEntity.ok(productoDao.findAll(pageable));
+    // } 
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ProductoEntity> obtenerProductoId(@PathVariable Long id){
+        Optional<ProductoEntity> c = productoDao.findById(id);
+
+        if(!c.isPresent()){
+            return ResponseEntity.unprocessableEntity().build();
+        }
+
+        return ResponseEntity.ok(c.get());
+    }
+
+    @PostMapping("")
+    public ResponseEntity<ProductoEntity> guardarProducto(@Valid @RequestBody ProductoEntity producto){
+        Optional<CategoriaEntity> categoriaOptional = categoriaDao.findById(producto.getCategoria().getId());
+        if(!categoriaOptional.isPresent()){
+            return ResponseEntity.unprocessableEntity().build();
+        }
+        producto.setCategoria(categoriaOptional.get());
+        ProductoEntity productoguardado = productoDao.save(producto);
+
+
+        URI ubicacion = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+                        .buildAndExpand(productoguardado.getId()).toUri();
+
+        return ResponseEntity.created(ubicacion).body(productoguardado);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ProductoEntity> actualizarProducto(@PathVariable Long id, @Valid @RequestBody ProductoEntity producto){
+      
+        Optional<CategoriaEntity> categoriaOptional = categoriaDao.findById(producto.getId());
+        if(!categoriaOptional.isPresent()){
+            return ResponseEntity.unprocessableEntity().build();
+        }
+
+        Optional<ProductoEntity> productoOptional = productoDao.findById(producto.getId());
+        if(!productoOptional.isPresent()){
+            return ResponseEntity.unprocessableEntity().build();
+        }
+
+
+        producto.setCategoria(categoriaOptional.get());
+        producto.setId(productoOptional.get().getId());
+        productoDao.save(producto);
+        
+
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ProductoEntity> eliminarProducto(@PathVariable Long id){
+        Optional<ProductoEntity> productoOptional = productoDao.findById(id);
+
+        if(!productoOptional.isPresent()){
+            return ResponseEntity.unprocessableEntity().build();
+        }
+        productoDao.delete(productoOptional.get());
+        return ResponseEntity.noContent().build();
+    }
+    
+}
