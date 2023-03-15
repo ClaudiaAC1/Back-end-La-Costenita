@@ -2,14 +2,16 @@ package com.Residencia.proyecto.restaurant.Utils;
 
 import java.util.LinkedList;
 
-public class CustomResponse {
+public class CustomResponseRol {
 
     private Integer httpCode;
     private Object data;
+    private String rol;
     private String mensage;
 
-    public CustomResponse() {
+    public CustomResponseRol() {
         this.httpCode = 200;
+        this.rol = "";
         data = new LinkedList<>();
         this.mensage = "Ok";
     }
@@ -29,12 +31,13 @@ public class CustomResponse {
     public void setData(Object data) {
         this.data = data;
     }
-    
-    public void addData(String valor) {
-       LinkedList<Object> a = new LinkedList<>();
-       a.add(data);
-       a.add(valor);
-       
+
+    public String getRol() {
+        return rol;
+    }
+
+    public void setRol(String rol) {
+        this.rol = rol;
     }
 
     public String getMensage() {

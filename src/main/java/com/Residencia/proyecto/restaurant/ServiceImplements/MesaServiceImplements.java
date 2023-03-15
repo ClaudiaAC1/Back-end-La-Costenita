@@ -9,9 +9,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.Residencia.proyecto.restaurant.Entity.MesaEntity;
+import com.Residencia.proyecto.restaurant.Exception.BlogAppException;
 import com.Residencia.proyecto.restaurant.Repository.EmpleadoDao;
 import com.Residencia.proyecto.restaurant.Repository.MesaDao;
 import com.Residencia.proyecto.restaurant.Services.MesaService;
+import org.springframework.http.HttpStatus;
 
 @Service
 public class MesaServiceImplements implements MesaService {
@@ -55,6 +57,10 @@ public class MesaServiceImplements implements MesaService {
     public void updateMesa(MesaEntity mesa, Long id) {
         Optional<MesaEntity> m = mesaDao.findById(id);
 
+        if(mesa.getEmpleado() == null){
+            
+            throw new BlogAppException(HttpStatus.BAD_REQUEST, "Asignar mesero a la mesa");
+        }
         Optional<EmpleadoEntity> e = empleadoDao
                 .findById(mesa.getEmpleado().getId());
 

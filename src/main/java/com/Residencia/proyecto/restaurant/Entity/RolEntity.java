@@ -2,6 +2,7 @@ package com.Residencia.proyecto.restaurant.Entity;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -19,7 +20,7 @@ public class RolEntity {
     
     private String nombre;
     
-    @OneToMany(mappedBy = "rol", cascade= CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "rol", cascade= CascadeType.ALL)
     private Set<EmpleadoEntity> empleados =  new HashSet<>();
     
     public RolEntity(){}

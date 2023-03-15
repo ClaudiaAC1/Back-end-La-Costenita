@@ -16,8 +16,10 @@ import com.Residencia.proyecto.restaurant.Entity.Dto.CodigoAcceso;
 import com.Residencia.proyecto.restaurant.Exception.BlogAppException;
 import com.Residencia.proyecto.restaurant.Services.EmpleadoService;
 import com.Residencia.proyecto.restaurant.Utils.CustomResponse;
+import com.Residencia.proyecto.restaurant.Utils.CustomResponseRol;
 
 import jakarta.validation.Valid;
+import java.util.Optional;
 
 //import lombok.extern.slf4j.Slf4j;
 
@@ -53,16 +55,18 @@ public class EmpleadoController {
      */
 
     @GetMapping("/search-name/{nombre}")
-    public CustomResponse getEmpleadoNombre(@PathVariable String nombre) {
-
-        CustomResponse customResponse = new CustomResponse();
-        customResponse.setData(empleadoService.getEmpleadoByNombre(nombre));
+    public ResponseEntity<CustomResponseRol> getEmpleadoNombre(@PathVariable String nombre) {
+        CustomResponseRol customResponse = new CustomResponseRol();
+                
+        customResponse.setData(empleadoService.getEmpleadoByNombre(nombre) );        
 
         if (customResponse.getData().hashCode() == 0) {
             throw new BlogAppException(HttpStatus.BAD_REQUEST, "Sin registro de ese nombre");
 
         } else {
-            throw new BlogAppException(HttpStatus.OK, "ok", (Object) customResponse.getData());
+            Optional<EmpleadoEntity> e = empleadoService.getEmpleadoByNombre(nombre);
+            customResponse.setRol(e.get().getRol().getNombre());
+            return new ResponseEntity<>(customResponse, HttpStatus.CREATED);
 
         }
     }
@@ -74,16 +78,20 @@ public class EmpleadoController {
      * @return
      */
     @GetMapping("/search-id/{id}")
-    public CustomResponse getEmpleadoId(@PathVariable Long id) {
+    public ResponseEntity<CustomResponseRol> getEmpleadoId(@PathVariable Long id) {
 
-        CustomResponse customResponse = new CustomResponse();
+        CustomResponseRol customResponse = new CustomResponseRol();
         customResponse.setData(empleadoService.getEmpleadoById(id));
 
         if (customResponse.getData().hashCode() == 0) {
             throw new BlogAppException(HttpStatus.BAD_REQUEST, "Sin registro de ese id");
 
         } else {
-            throw new BlogAppException(HttpStatus.OK, "ok", (Object) customResponse.getData());
+            Optional<EmpleadoEntity> e = empleadoService.getEmpleadoById(id);
+            customResponse.setRol(e.get().getRol().getNombre());
+            return new ResponseEntity<>(customResponse, HttpStatus.OK);
+            
+            
 
         }
     }

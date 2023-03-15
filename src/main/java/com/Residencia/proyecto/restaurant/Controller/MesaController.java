@@ -97,12 +97,17 @@ public class MesaController {
     public ResponseEntity<CustomResponse> saveTable(@RequestBody @Valid MesaEntity mesa){
         CustomResponse customResponse = new CustomResponse();
 
+        if(mesa.getEmpleado() == null){
+            
+            throw new BlogAppException(HttpStatus.BAD_REQUEST, "Asignar mesero a la mesa");
+        }
         Optional <EmpleadoEntity> empleadoOptional = empleadoService
                               .getEmpleadoById(mesa.getEmpleado().getId());
         
         if(!empleadoOptional.isPresent()){
-            return ResponseEntity.unprocessableEntity().build();
+            throw new BlogAppException(HttpStatus.BAD_REQUEST, "Mesero asignado no encontrado");
         }
+        
         mesa.setEmpleado(empleadoOptional.get());        
         mesaService.saveMesa(mesa);
         return new ResponseEntity<>(customResponse, HttpStatus.CREATED);        

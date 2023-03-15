@@ -57,7 +57,7 @@ public class EmpleadoEntity {
      * *
      * fetch = FetchType.LAZY lazy= solo trae lps datos cuanod se le pidan
      */
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "rol_id") //joinColumn indica quien sera la clase propietaria
     @JsonProperty(access = Access.WRITE_ONLY)  //para que en api rest ignore la propiedad y pueda serializarla  
     private RolEntity rol;

@@ -72,7 +72,12 @@ public class ProductoController {
     @PostMapping("")
     public ResponseEntity<CustomResponse> guardarProducto(@Valid @RequestBody ProductoEntity producto) {
         CustomResponse customResponse = new CustomResponse();
-
+            
+        if(producto.getCategoria() == null){
+            
+            throw new BlogAppException(HttpStatus.BAD_REQUEST, "Asignar categoria al producto");
+        }
+        
         Optional<CategoriaEntity> categoriaOptional = categoriaService
                 .getCategoriaById(producto.getCategoria().getId());
 
