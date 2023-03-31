@@ -13,6 +13,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 //import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.NotBlank;
 import java.util.HashSet;
@@ -62,7 +63,8 @@ public class EmpleadoEntity {
     @JsonProperty(access = Access.WRITE_ONLY)  //para que en api rest ignore la propiedad y pueda serializarla  
     private RolEntity rol;
     
-    
+    @Transient
+    private String rolName;
 
     public EmpleadoEntity(String nombre, String apellidos, String telefono, Byte status, Double sueldo, String codigoAcceso, Set<MesaEntity> mesas, RolEntity rol) {
         this.nombre = nombre;
@@ -73,6 +75,7 @@ public class EmpleadoEntity {
         this.codigoAcceso = codigoAcceso;
         this.mesas = mesas;
         this.rol = rol;
+        this.rolName = rol.getNombre();
     }
 
     public EmpleadoEntity() {
@@ -153,4 +156,11 @@ public class EmpleadoEntity {
         this.rol = rol;
     }
 
+    public String getRolName() {
+        return rol.getNombre();
+    }
+
+    public void setRolName(String rolName) {
+        this.rolName = rolName;
+    }
 }

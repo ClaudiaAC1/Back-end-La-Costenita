@@ -1,57 +1,35 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
 package com.Residencia.proyecto.restaurant.Entity;
 
-
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Data
+/**
+ *
+ * @author claua
+ */
 @Entity
 @Table(name = "user")
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class UserEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-
-    private String username;
+    private String name;
     private String email;
     private String password;
-    
-    //
-    @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "empleado_id")
-    private EmpleadoEntity empleado; 
-
-    
-
-
-    public UserEntity(){}
-
-    public UserEntity(String username, String email, String password, EmpleadoEntity empleado) {
-        this.username = username;
-        this.email = email;
-        this.password = password;
-        this.empleado = empleado;
-    }
-    
-
-
-    
-
-    
-
-   
-
-
-    
-        
-
-
-    
+    private String roles;
 }

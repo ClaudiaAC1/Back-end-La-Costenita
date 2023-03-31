@@ -11,6 +11,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import lombok.Data;
 
 @Data
@@ -45,7 +46,8 @@ public class ProductoEntity {
     @JsonProperty(access = Access.WRITE_ONLY)  //para que en api rest ignore la propiedad y pueda serializarla  
     private CategoriaEntity categoria;
 
-
+     @Transient
+    private String categoriaName;
     public ProductoEntity(){
 
     }
@@ -58,8 +60,11 @@ public class ProductoEntity {
         this.contador = contador;
         this.url_img = url_img;
         this.categoria = categoria;
+        this.categoriaName =  categoria.getNombre();
     }
 
-    
+    public String getcategoriaName(){
+        return categoria.getNombre();
+    }
 
 }

@@ -16,7 +16,6 @@ import com.Residencia.proyecto.restaurant.Entity.Dto.CodigoAcceso;
 import com.Residencia.proyecto.restaurant.Exception.BlogAppException;
 import com.Residencia.proyecto.restaurant.Services.EmpleadoService;
 import com.Residencia.proyecto.restaurant.Utils.CustomResponse;
-import com.Residencia.proyecto.restaurant.Utils.CustomResponseRol;
 
 import jakarta.validation.Valid;
 import java.util.Optional;
@@ -55,8 +54,8 @@ public class EmpleadoController {
      */
 
     @GetMapping("/search-name/{nombre}")
-    public ResponseEntity<CustomResponseRol> getEmpleadoNombre(@PathVariable String nombre) {
-        CustomResponseRol customResponse = new CustomResponseRol();
+    public ResponseEntity<CustomResponse> getEmpleadoNombre(@PathVariable String nombre) {
+        CustomResponse customResponse = new CustomResponse();
                 
         customResponse.setData(empleadoService.getEmpleadoByNombre(nombre) );        
 
@@ -65,8 +64,8 @@ public class EmpleadoController {
 
         } else {
             Optional<EmpleadoEntity> e = empleadoService.getEmpleadoByNombre(nombre);
-            customResponse.setRol(e.get().getRol().getNombre());
-            return new ResponseEntity<>(customResponse, HttpStatus.CREATED);
+           
+            return new ResponseEntity<>(customResponse, HttpStatus.OK);
 
         }
     }
@@ -78,9 +77,9 @@ public class EmpleadoController {
      * @return
      */
     @GetMapping("/search-id/{id}")
-    public ResponseEntity<CustomResponseRol> getEmpleadoId(@PathVariable Long id) {
+    public ResponseEntity<CustomResponse> getEmpleadoId(@PathVariable Long id) {
 
-        CustomResponseRol customResponse = new CustomResponseRol();
+        CustomResponse customResponse = new CustomResponse();
         customResponse.setData(empleadoService.getEmpleadoById(id));
 
         if (customResponse.getData().hashCode() == 0) {
@@ -88,7 +87,7 @@ public class EmpleadoController {
 
         } else {
             Optional<EmpleadoEntity> e = empleadoService.getEmpleadoById(id);
-            customResponse.setRol(e.get().getRol().getNombre());
+            
             return new ResponseEntity<>(customResponse, HttpStatus.OK);
             
             
@@ -103,7 +102,7 @@ public class EmpleadoController {
      * @return
      */
     @GetMapping("/search-tel/{telefono}")
-    public CustomResponse getEmpleadoTelefono(@PathVariable String telefono) {
+    public ResponseEntity<CustomResponse> getEmpleadoTelefono(@PathVariable String telefono) {
         CustomResponse customResponse = new CustomResponse();
         customResponse.setData(empleadoService.getEmpleadoByTelefono(telefono));
 
@@ -111,8 +110,9 @@ public class EmpleadoController {
             throw new BlogAppException(HttpStatus.BAD_REQUEST, "Sin registro de ese telefono");
 
         } else {
-            throw new BlogAppException(HttpStatus.OK, "ok", (Object) customResponse.getData());
-
+            Optional<EmpleadoEntity> e = empleadoService.getEmpleadoByTelefono(telefono);
+            
+            return new ResponseEntity<>(customResponse, HttpStatus.OK);
         }
     }
 

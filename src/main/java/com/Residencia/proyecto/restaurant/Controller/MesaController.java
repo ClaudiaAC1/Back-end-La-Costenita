@@ -54,7 +54,7 @@ public class MesaController {
      */
 
     @GetMapping("search-name/{nombre}")
-    public CustomResponse getMesaNombre(@PathVariable String nombre) {
+    public ResponseEntity<CustomResponse> getMesaNombre(@PathVariable String nombre) {
 
         CustomResponse customResponse = new CustomResponse();
         customResponse.setData(mesaService.getMesa(nombre));
@@ -63,8 +63,8 @@ public class MesaController {
             throw new BlogAppException(HttpStatus.BAD_REQUEST, "Sin registro de esa mesa");
 
         } else {
-            throw new BlogAppException(HttpStatus.OK, "ok", (Object) customResponse.getData());
-
+            Optional<MesaEntity> m = mesaService.getMesa(nombre);
+            return new ResponseEntity<>(customResponse, HttpStatus.OK);
         }
     }
 
@@ -74,7 +74,7 @@ public class MesaController {
      * @return objeto mesa con coincidencia en id
      */
     @GetMapping("/{id}")
-    public CustomResponse getMesaId(@PathVariable Long id) {
+    public ResponseEntity<CustomResponse> getMesaId(@PathVariable Long id) {
 
         CustomResponse customResponse = new CustomResponse();
         customResponse.setData(mesaService.getMesa(id));
@@ -83,8 +83,8 @@ public class MesaController {
             throw new BlogAppException(HttpStatus.BAD_REQUEST, "Sin registro de esa mesa");
 
         } else {
-            throw new BlogAppException(HttpStatus.OK, "ok", (Object) customResponse.getData());
-
+            Optional<MesaEntity> m = mesaService.getMesa(id);
+            return new ResponseEntity<>(customResponse, HttpStatus.OK);
         }
     }
     
@@ -101,6 +101,7 @@ public class MesaController {
             
             throw new BlogAppException(HttpStatus.BAD_REQUEST, "Asignar mesero a la mesa");
         }
+        
         Optional <EmpleadoEntity> empleadoOptional = empleadoService
                               .getEmpleadoById(mesa.getEmpleado().getId());
         

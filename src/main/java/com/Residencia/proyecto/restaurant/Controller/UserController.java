@@ -1,16 +1,16 @@
 package com.Residencia.proyecto.restaurant.Controller;
 
-import com.Residencia.proyecto.restaurant.Entity.EmpleadoEntity;
 import com.Residencia.proyecto.restaurant.Entity.UserEntity;
-import com.Residencia.proyecto.restaurant.Repository.UserDao;
+import com.Residencia.proyecto.restaurant.Exception.BlogAppException;
+import com.Residencia.proyecto.restaurant.Services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.Residencia.proyecto.restaurant.Services.UserService;
 import com.Residencia.proyecto.restaurant.Utils.CustomResponse;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,48 +22,42 @@ import org.springframework.web.bind.annotation.RequestBody;
 public class UserController {
 
     @Autowired
-    private UserDao userDao;
+    private UserService userService;
 
     @GetMapping()
     public CustomResponse getUsers() {
         CustomResponse customResponse = new CustomResponse();
-        customResponse.setData(userDao.findAll());
+        customResponse.setData(userService.getUsers());
         return customResponse;
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserEntity> verDetallesDelEmpleado(@PathVariable Long id) {
-        UserEntity usuario = userDao.findById(id).get();
+    public ResponseEntity<CustomResponse> getUserById(@PathVariable Long id) {
+        CustomResponse customResponse = new CustomResponse();
+        customResponse.setData(userService.getUserById(id));
 
-        return ResponseEntity.ok().body(usuario);
+        if (customResponse.getData().hashCode() == 0) {
+            throw new BlogAppException(HttpStatus.BAD_REQUEST, "Sin registro de ese id");
+
+        } else {
+            return new ResponseEntity<>(customResponse, HttpStatus.OK);
+        }
     }
 
     @PostMapping()
-    public CustomResponse guardarUser(@RequestBody UserEntity user) {
+    public CustomResponse saveUser(@RequestBody UserEntity user) {
         CustomResponse customResponse = new CustomResponse();
-        userDao.save(user);
-        customResponse.setData("creado");
+        userService.saveUser(user);
+        customResponse.setData("usuario creado");
         return customResponse;
     }
-//	
-//	@PutMapping("/instructores/{id}")
-//	public ResponseEntity<Instructor> actualizarInstructor(@PathVariable Long id,@Valid @RequestBody Instructor instructorDetallles){
-//		Instructor instructor = instructorRepository.findById(id)
-//				.orElseThrow(() -> new ResourceNotFoundException("Instructor con el ID : " + id + " no encontrado"));
-//		
-//		instructor.setEmail(instructorDetallles.getEmail());
-//		Instructor instructorActualizado = instructorRepository.save(instructor);
-//		return ResponseEntity.ok(instructorActualizado);
-//	}
-//	
-//	@DeleteMapping("/instructores/{id}")
-//	public Map<String, Boolean> eliminarInstructor(@PathVariable Long id){
-//		Instructor instructor = instructorRepository.findById(id)
-//				.orElseThrow(() -> new ResourceNotFoundException("Instructor con el ID : " + id + " no encontrado"));
-//		
-//		instructorRepository.delete(instructor);
-//		Map<String,Boolean> respuesta = new HashMap<>();
-//		respuesta.put("Instructor eliminado", Boolean.TRUE);
-//		return respuesta;
-//	}
+
+    @DeleteMapping("/{id}")
+    public CustomResponse deleteUser(@PathVariable Long id) {
+        CustomResponse customResponse = new CustomResponse();
+        userService.deleteUser(id);
+        customResponse.setData("usuario eliminado");
+        return customResponse;
+    }
+
 }

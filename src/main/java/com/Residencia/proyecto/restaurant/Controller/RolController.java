@@ -9,7 +9,6 @@ import com.Residencia.proyecto.restaurant.Exception.BlogAppException;
 import com.Residencia.proyecto.restaurant.Services.RolService;
 import com.Residencia.proyecto.restaurant.Utils.CustomResponse;
 import jakarta.validation.Valid;
-import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -69,7 +68,7 @@ public class RolController {
         } else {
             throw new BlogAppException(HttpStatus.OK, "ok", (Object) customResponse.getData());
 
-        }
+        } 
     }
 
     @PostMapping("/")

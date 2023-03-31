@@ -52,14 +52,16 @@ public class ProductoController {
      * @return objeto producto con sus datos
      */
     @GetMapping("/{id}")
-    public CustomResponse obtenerProductoId(@PathVariable Long id) {
+    public ResponseEntity<CustomResponse> obtenerProductoId(@PathVariable Long id) {
         CustomResponse customResponse = new CustomResponse();
+        
         customResponse.setData(productoService.getProductoById(id));
 
         if (customResponse.getData().hashCode() == 0) {
             throw new BlogAppException(HttpStatus.BAD_REQUEST, "Sin registro de ese id");
         } else {
-            throw new BlogAppException(HttpStatus.OK, "ok", (Object) customResponse.getData());
+            Optional<ProductoEntity> p = productoService.getProductoById(id);
+            return new ResponseEntity<>(customResponse, HttpStatus.OK);
 
         }
     }
@@ -86,7 +88,7 @@ public class ProductoController {
         }
         producto.setCategoria(categoriaOptional.get());
         productoService.saveProducto(producto);
-
+        customResponse.setMensage("Producto guardado"+ producto.getNombre()+ "exitosamente");
         return new ResponseEntity<>(customResponse, HttpStatus.CREATED);
     }
 
