@@ -7,14 +7,12 @@ public class CustomResponse {
     private Integer httpCode;
     private Object data;
     private String mensage;
-    
-    
-    public CustomResponse(){
+
+    public CustomResponse() {
         this.httpCode = 200;
-	    data = new LinkedList<>();
-	    this.mensage = "Ok";
-    }    
-    
+        data = new LinkedList<>();
+        this.mensage = "Ok";
+    }
 
     public Integer getHttpCode() {
         return httpCode;
@@ -32,7 +30,13 @@ public class CustomResponse {
         this.data = data;
     }
     
-    
+    public void addData(String valor) {
+       LinkedList<Object> a = new LinkedList<>();
+       a.add(data);
+       a.add(valor);
+       
+    }
+
     public String getMensage() {
         return mensage;
     }
@@ -40,5 +44,5 @@ public class CustomResponse {
     public void setMensage(String mensage) {
         this.mensage = mensage;
     }
-    
+
 }

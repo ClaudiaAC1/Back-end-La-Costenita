@@ -47,7 +47,7 @@ public class GlobalExceptionHandler {
      * @param webRequest
      * @return los detalles de la excepcion
      */
-
+    
     @ResponseStatus(code = HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<CustomResponse> manejarhandleMethodArgumentNotValid(MethodArgumentNotValidException ex) {

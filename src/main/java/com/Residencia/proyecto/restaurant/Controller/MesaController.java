@@ -1,6 +1,7 @@
 package com.Residencia.proyecto.restaurant.Controller;
 
 
+import com.Residencia.proyecto.restaurant.Entity.EmpleadoEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -15,10 +16,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.Residencia.proyecto.restaurant.Entity.MesaEntity;
 import com.Residencia.proyecto.restaurant.Exception.BlogAppException;
+import com.Residencia.proyecto.restaurant.Services.EmpleadoService;
 import com.Residencia.proyecto.restaurant.Services.MesaService;
 import com.Residencia.proyecto.restaurant.Utils.CustomResponse;
 
 import jakarta.validation.Valid;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/table")
@@ -27,6 +30,9 @@ public class MesaController {
 
     @Autowired
     private MesaService mesaService;
+    
+    @Autowired
+    private EmpleadoService empleadoService; 
 
     /**
      * 
@@ -47,8 +53,8 @@ public class MesaController {
      * @return objeto mesa con sus datos 
      */
 
-    @GetMapping("name/{nombre}")
-    public CustomResponse getMesaNombre(@PathVariable String nombre) {
+    @GetMapping("search-name/{nombre}")
+    public ResponseEntity<CustomResponse> getMesaNombre(@PathVariable String nombre) {
 
         CustomResponse customResponse = new CustomResponse();
         customResponse.setData(mesaService.getMesa(nombre));
@@ -57,8 +63,8 @@ public class MesaController {
             throw new BlogAppException(HttpStatus.BAD_REQUEST, "Sin registro de esa mesa");
 
         } else {
-            throw new BlogAppException(HttpStatus.OK, "ok", (Object) customResponse.getData());
-
+            Optional<MesaEntity> m = mesaService.getMesa(nombre);
+            return new ResponseEntity<>(customResponse, HttpStatus.OK);
         }
     }
 
@@ -68,7 +74,7 @@ public class MesaController {
      * @return objeto mesa con coincidencia en id
      */
     @GetMapping("/{id}")
-    public CustomResponse getMesaId(@PathVariable Long id) {
+    public ResponseEntity<CustomResponse> getMesaId(@PathVariable Long id) {
 
         CustomResponse customResponse = new CustomResponse();
         customResponse.setData(mesaService.getMesa(id));
@@ -77,8 +83,8 @@ public class MesaController {
             throw new BlogAppException(HttpStatus.BAD_REQUEST, "Sin registro de esa mesa");
 
         } else {
-            throw new BlogAppException(HttpStatus.OK, "ok", (Object) customResponse.getData());
-
+            Optional<MesaEntity> m = mesaService.getMesa(id);
+            return new ResponseEntity<>(customResponse, HttpStatus.OK);
         }
     }
     
@@ -91,12 +97,21 @@ public class MesaController {
     public ResponseEntity<CustomResponse> saveTable(@RequestBody @Valid MesaEntity mesa){
         CustomResponse customResponse = new CustomResponse();
 
+        if(mesa.getEmpleado() == null){
+            
+            throw new BlogAppException(HttpStatus.BAD_REQUEST, "Asignar mesero a la mesa");
+        }
+        
+        Optional <EmpleadoEntity> empleadoOptional = empleadoService
+                              .getEmpleadoById(mesa.getEmpleado().getId());
+        
+        if(!empleadoOptional.isPresent()){
+            throw new BlogAppException(HttpStatus.BAD_REQUEST, "Mesero asignado no encontrado");
+        }
+        
+        mesa.setEmpleado(empleadoOptional.get());        
         mesaService.saveMesa(mesa);
-        customResponse.setData("Mesa registrada correctamente");
-        customResponse.setHttpCode(HttpStatus.CREATED.value());
-        customResponse.setMensage(HttpStatus.CREATED.name());
-
-        return new ResponseEntity<CustomResponse>(customResponse, HttpStatus.CREATED);        
+        return new ResponseEntity<>(customResponse, HttpStatus.CREATED);        
     
     }
 
@@ -108,27 +123,27 @@ public class MesaController {
      */
     @PutMapping("/{id}")
     public ResponseEntity<CustomResponse> updateMesa(@RequestBody MesaEntity mesa, @PathVariable Long id) {
-        CustomResponse customResponse = new CustomResponse();
-        MesaEntity m = mesaService.getMesa(id).get();
-
-        m.setNombre(mesa.getNombre());
-        m.setStatus(mesa.getStatus());
-        m.setCapacidad(mesa.getCapacidad());
+        CustomResponse customResponse = new CustomResponse();        
         
-        mesaService.updateMesa(m, id);
+        mesaService.updateMesa(mesa, id);
         customResponse.setData("Mesa actualizada correctamente");
         customResponse.setHttpCode(HttpStatus.CREATED.value());
         customResponse.setMensage(HttpStatus.CREATED.name());
         
-        return new ResponseEntity<CustomResponse>(customResponse, HttpStatus.CREATED); 
+        return new ResponseEntity<>(customResponse, HttpStatus.CREATED); 
     }
-
+    
+    /**
+     * Eliminar mesa
+     * @param id
+     * @return 
+     */
     @DeleteMapping("{id}")
     public ResponseEntity<CustomResponse> deleteTable(@PathVariable Long id){
         CustomResponse customResponse = new CustomResponse();
         mesaService.deleteMesa(id);
 
-        return new ResponseEntity<CustomResponse>(customResponse, HttpStatus.OK);  
+        return new ResponseEntity<>(customResponse, HttpStatus.OK);  
 
     }   
 

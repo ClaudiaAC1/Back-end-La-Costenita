@@ -6,34 +6,34 @@ import com.Residencia.proyecto.restaurant.Utils.CustomResponse;
 
 //Clase que controla las excepciones en tiempo de ejecucion
 public class BlogAppException extends RuntimeException {
-    
+
     private static final long serialVersionUID = 1L;
     CustomResponse customResponse = new CustomResponse();
-    private HttpStatus estado;
+    private HttpStatus status;
     private String mensaje;
 
-    public BlogAppException(HttpStatus estado, String mensaje) {
+    public BlogAppException(HttpStatus status, String mensaje) {
         super();
-        this.estado = estado;
-        customResponse.setHttpCode(estado.value());
+        this.status = status;
+        customResponse.setHttpCode(status.value());
         this.mensaje = mensaje;
-    }   
-    
+    }
+
     public BlogAppException(HttpStatus estado, String mensaje, Object data) {
         super();
-        this.estado = estado;
+        this.status = estado;
         customResponse.setHttpCode(estado.value());
-        
+
         customResponse.setData(data);
         this.mensaje = mensaje;
     }
 
     public HttpStatus getEstado() {
-        return estado;
+        return status;
     }
 
-    public void setEstado(HttpStatus estado) {
-        this.estado = estado;
+    public void setEstado(HttpStatus status) {
+        this.status = status;
     }
 
     public String getMensaje() {
@@ -51,4 +51,13 @@ public class BlogAppException extends RuntimeException {
     public void setCustomResponse(CustomResponse customResponse) {
         this.customResponse = customResponse;
     }
+
+    public HttpStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(HttpStatus status) {
+        this.status = status;
+    }
+
 }
