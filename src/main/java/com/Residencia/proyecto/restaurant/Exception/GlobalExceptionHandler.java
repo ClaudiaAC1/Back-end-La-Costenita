@@ -13,13 +13,14 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 
 import com.Residencia.proyecto.restaurant.Utils.CustomResponse;
+import java.sql.SQLIntegrityConstraintViolationException;
 
 @RestControllerAdvice // anotacion para manejar excepciones originadas en el restcontroller
 public class GlobalExceptionHandler {
 
     /**
-     * Manejador de excepciones genarada con la clase BlogAppException
-     * Manejamos las excepciones a la hora de ejecucion
+     * Manejador de excepciones genarada con la clase BlogAppException Manejamos
+     * las excepciones a la hora de ejecucion
      *
      * @see BlogAppException
      *
@@ -27,6 +28,7 @@ public class GlobalExceptionHandler {
      * @param webRequest
      * @return los detalles de la excepcion
      */
+    @ResponseStatus(code = HttpStatus.BAD_REQUEST)
     @ExceptionHandler(BlogAppException.class)
     public ResponseEntity<CustomResponse> manejarBlogAppException(BlogAppException exception, WebRequest webRequest) {
         Object x = exception.getCustomResponse().getData();
@@ -36,23 +38,44 @@ public class GlobalExceptionHandler {
         errorDetalles.setMensage(exception.getMensaje());
         errorDetalles.setData(x);
 
-        return new ResponseEntity<CustomResponse>(errorDetalles, exception.getEstado());
+        return new ResponseEntity<>(errorDetalles, exception.getEstado());
     }
 
     /**
-     * Manejador de excepciones
-     * EXCEPCION QUE SE LANZA CUANDO ALGUN CAMPO ES RELLENADO INCORRECTAMENTE
-     * 
-        * @param exception
+     * Manejador de excepciones genarada con la clase SQLIntegrityConstraintViolationException Manejamos
+     * las excepciones a la hora de ejecucion cuando se duplica algun registro que debe de ser unico
+     *
+     * @param ex
+     * @see BlogAppException     
+     * @return los detalles de la excepcion
+     */
+    @ResponseStatus(code = HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
+    public ResponseEntity<CustomResponse> menejarSQLIntegrity(SQLIntegrityConstraintViolationException ex) {
+        CustomResponse errorDetalles = new CustomResponse();
+        
+        
+        errorDetalles.setData(ex.getMessage());
+        errorDetalles.setHttpCode(HttpStatus.BAD_REQUEST.value());
+        errorDetalles.setMensage("Valor ya existente en otro registro");
+
+        return new ResponseEntity<>(errorDetalles, HttpStatus.BAD_REQUEST);
+    }
+
+    /**
+     * Manejador de excepciones EXCEPCION QUE SE LANZA CUANDO ALGUN CAMPO ES
+     * RELLENADO INCORRECTAMENTE
+     *
+     * @param ex
+     * @param exception
      * @param webRequest
      * @return los detalles de la excepcion
      */
-    
     @ResponseStatus(code = HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<CustomResponse> manejarhandleMethodArgumentNotValid(MethodArgumentNotValidException ex) {
         CustomResponse errorDetalles = new CustomResponse();
-            Map<String, String> errores = new HashMap<String, String>();
+        Map<String, String> errores = new HashMap<>();
         ex.getBindingResult().getAllErrors().forEach((error) -> {
             String nombreCampo = ((FieldError) error).getField();
             String mensaje = error.getDefaultMessage();
@@ -60,10 +83,10 @@ public class GlobalExceptionHandler {
             errores.put(nombreCampo, mensaje);
         });
         errorDetalles.setData(errores);
-            errorDetalles.setHttpCode(ex.getStatusCode().value());
-            errorDetalles.setMensage("Errores al ingresar datos");
+        errorDetalles.setHttpCode(ex.getStatusCode().value());
+        errorDetalles.setMensage("Errores al ingresar datos");
 
-        return new ResponseEntity<CustomResponse>(errorDetalles, ex.getStatusCode());
+        return new ResponseEntity<>(errorDetalles, ex.getStatusCode());
     }
 
     // @ResponseStatus(code = HttpStatus.BAD_REQUEST)
@@ -73,13 +96,10 @@ public class GlobalExceptionHandler {
     //     ex.getBindingResult().getAllErrors().forEach((error) -> {
     //         String nombreCampo = ((FieldError) error).getField();
     //         String mensaje = error.getDefaultMessage();
-
     //         errores.put(nombreCampo, mensaje);
     //     });
-
     //     return errores;
     // }
-
     // /**
     // * Manejador de excepciones genarada cuando no se rellenan los campos
     // correctamente
@@ -99,5 +119,4 @@ public class GlobalExceptionHandler {
     // errorDetalles.setMensage(exception.getMessage());
     // return new ResponseEntity<>(errorDetalles, HttpStatus.BAD_REQUEST);
     // }
-
 }

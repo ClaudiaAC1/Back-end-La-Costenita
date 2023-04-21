@@ -25,6 +25,7 @@ public class UserServiceImplements implements UserService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+    
 
     @Override
     public List<UserEntity> getUsers() {
@@ -56,6 +57,7 @@ public class UserServiceImplements implements UserService {
     public void updateUser(UserEntity user, Long id) {
         Optional<UserEntity> userOptional = userDao.findById(id);
         user.setId(userOptional.get().getId());
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         userDao.save(user);
     }
 

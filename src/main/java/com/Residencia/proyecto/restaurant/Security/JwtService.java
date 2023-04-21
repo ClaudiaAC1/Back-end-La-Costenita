@@ -77,7 +77,7 @@ public class JwtService {
                 .setClaims(claims)
                 .setSubject(userName)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis()+1000*60*5)) //8 horas de acceso (System.currentTimeMillis()+1000*60*480)
+                .setExpiration(new Date(System.currentTimeMillis()+1000*60*60)) //8 horas de acceso (System.currentTimeMillis()+1000*60*480)
                 .signWith(getSignKey(), SignatureAlgorithm.HS256).compact();
     }
 
@@ -86,30 +86,6 @@ public class JwtService {
         return Keys.hmacShaKeyFor(keyBytes);
     }
     
-    
-//    /**
-//     * Metodo que validar el token 
-//     *
-//     * @param authentication
-//     * @return  boolean
-//     */  
-//    public boolean validarToken(String token) {
-//        try {
-//            Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token);
-//            return true;
-//        } catch (SignatureException ex) {
-//            throw new BlogAppException(HttpStatus.UNAUTHORIZED, "Firma JWT no valida");
-//        } catch (MalformedJwtException ex) {
-//            throw new BlogAppException(HttpStatus.UNAUTHORIZED, "Token JWT no valida");
-//        } catch (ExpiredJwtException ex) {
-//            throw new BlogAppException(HttpStatus.UNAUTHORIZED, "Token JWT caducado");
-//        } catch (UnsupportedJwtException ex) {
-//            throw new BlogAppException(HttpStatus.UNAUTHORIZED, "Token JWT no compatible");
-//        } catch (IllegalArgumentException ex) {
-//            throw new BlogAppException(HttpStatus.UNAUTHORIZED, "La cadena claims JWT esta vacia");
-//        }
-//    }
-
     /**
      * Metodo que validar el token 
      *

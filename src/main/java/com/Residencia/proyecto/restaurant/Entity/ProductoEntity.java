@@ -1,7 +1,9 @@
 package com.Residencia.proyecto.restaurant.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
+import jakarta.persistence.CascadeType;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -10,15 +12,16 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
+import java.util.HashSet;
+import java.util.Set;
 import lombok.Data;
 
 @Data
 @Entity 
 @Table(name="producto")
-// ,
-//     uniqueConstraints = {@UniqueConstraint(columnNames = {"nombre"})})
 public class ProductoEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -46,8 +49,14 @@ public class ProductoEntity {
     @JsonProperty(access = Access.WRITE_ONLY)  //para que en api rest ignore la propiedad y pueda serializarla  
     private CategoriaEntity categoria;
 
-     @Transient
+    @Transient
     private String categoriaName;
+    
+    @JsonIgnore
+    @OneToMany(mappedBy = "idProducto", cascade= CascadeType.ALL)
+    private Set<Pedido_ProductoEntity> producto_pedido =  new HashSet<>();
+            
+     
     public ProductoEntity(){
 
     }

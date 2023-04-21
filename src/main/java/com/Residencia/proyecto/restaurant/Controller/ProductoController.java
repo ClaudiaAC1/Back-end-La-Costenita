@@ -23,6 +23,7 @@ import jakarta.validation.Valid;
 
 import com.Residencia.proyecto.restaurant.Services.*;
 import com.Residencia.proyecto.restaurant.Exception.BlogAppException;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 @RestController
 @RequestMapping("/product")
@@ -39,6 +40,7 @@ public class ProductoController {
      * @return lista de Productos
      */
     @GetMapping("")
+    @PreAuthorize("hasAnyAuthority('admin','cajero')")
     public CustomResponse listarProductos() {
         CustomResponse customResponse = new CustomResponse();
         customResponse.setData(productoService.getProductos());
@@ -52,6 +54,7 @@ public class ProductoController {
      * @return objeto producto con sus datos
      */
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyAuthority('admin','cajero')")
     public ResponseEntity<CustomResponse> obtenerProductoId(@PathVariable Long id) {
         CustomResponse customResponse = new CustomResponse();
         
@@ -72,7 +75,8 @@ public class ProductoController {
      * @return
      */
     @PostMapping("")
-    public ResponseEntity<CustomResponse> guardarProducto(@Valid @RequestBody ProductoEntity producto) {
+    @PreAuthorize("hasAuthority('admin')")
+    public ResponseEntity<CustomResponse> guardarProducto(@RequestBody @Valid ProductoEntity producto) {
         CustomResponse customResponse = new CustomResponse();
             
         if(producto.getCategoria() == null){
@@ -99,7 +103,8 @@ public class ProductoController {
      * @return leyenda con creado o no correctamente
      */
     @PutMapping("/{id}")
-    public ResponseEntity<CustomResponse> actualizarProducto(@RequestBody ProductoEntity producto, @PathVariable Long id) {
+    @PreAuthorize("hasAuthority('admin')")
+    public ResponseEntity<CustomResponse> actualizarProducto(@RequestBody @Valid ProductoEntity producto, @PathVariable Long id) {
 
         CustomResponse customResponse = new CustomResponse();
 
@@ -120,6 +125,7 @@ public class ProductoController {
      * @return
      */
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('admin')")
     public ResponseEntity<CustomResponse> eliminarProducto(@PathVariable Long id) {
         CustomResponse customResponse = new CustomResponse();
         Optional<ProductoEntity> productoOptional = productoService.getProductoById(id);

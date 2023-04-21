@@ -11,11 +11,12 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.NotBlank;
 
 @Entity
-@Table(name = "categoria")
-//, uniqueConstraints = { @UniqueConstraint(columnNames = { "nombre" }) })
+@Table(name = "categoria",uniqueConstraints={ //nombre de la tabla y le decimos que el teelfono sera unico para cada empleado
+@UniqueConstraint(columnNames = {"nombre"})})
 
 public class CategoriaEntity {
     @Id

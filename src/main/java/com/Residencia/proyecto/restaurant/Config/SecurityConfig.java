@@ -48,25 +48,43 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
-        return http.csrf().disable()
+        return http
+                .csrf()
+                .disable()
                 .authorizeHttpRequests()
-                .requestMatchers("/**").permitAll() //.requestMatchers("/auth/**", "/user/**")
+                .requestMatchers("/login/**", "/user", "/swagger-ui/**")
+                    .permitAll() //aqui las rutas a las que todos podran acceder
+                .anyRequest()
+                    .authenticated()
                 .and()
-                .authorizeHttpRequests().requestMatchers("/**")
-                .authenticated().and()
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                    .sessionManagement()
+                    .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class)
                 .logout()
-                .logoutUrl("/logout") //no funciona jejeje
+                .logoutSuccessUrl("/logout")
                 .addLogoutHandler(logoutHandler)
-                .logoutSuccessHandler((request, response, authentication) -> SecurityContextHolder.clearContext())
-                .and()
-                .build(); 
+        .logoutSuccessHandler((request, response, authentication) -> SecurityContextHolder.clearContext())
+        .and()
+            .build();
+//                .authorizeHttpRequests().requestMatchers("/user/**", "/table/**", "/rol/**", 
+//                                                        "/category/**", "/product/**") //aqui van las rutas que permitiran autenticacion 
+//                .authenticated().and()
+//                .sessionManagement()
+//                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+//                .and()
+//                .authenticationProvider(authenticationProvider())
+//                .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class)
+//                .logout()
+//                .logoutUrl("/logout") //no funciona jejeje
+//                .addLogoutHandler(logoutHandler)
+//                .logoutSuccessHandler((request, response, authentication) -> SecurityContextHolder.clearContext())
+//                .and()
+//                .build(); 
 
     }
+    
 
     @Bean
     public PasswordEncoder passwordEncoder() {

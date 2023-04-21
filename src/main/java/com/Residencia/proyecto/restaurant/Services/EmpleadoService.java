@@ -15,12 +15,13 @@ public interface EmpleadoService {
 
     public Optional<EmpleadoEntity> getEmpleadoByTelefono(String telefono);
 
-    public boolean saveEmpleado(EmpleadoEntity empleado); 
+    public void saveEmpleado(EmpleadoEntity empleado); 
 
-    public void deleteEmpleado(EmpleadoEntity empleado); 
+    public void deleteEmpleado(Long id); 
 
     public void updateEmpleado(EmpleadoEntity empleado, Long id);
 
     public boolean validCodigoAcceso(Long id, String codigoAcceso);
+
 
 }

@@ -14,15 +14,19 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
-//import jakarta.persistence.UniqueConstraint;
+import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.NotBlank;
 import java.util.HashSet;
 import java.util.Set;
+import org.hibernate.validator.constraints.Length;
 
+/**
+ *
+ * @author claua
+ */
 @Entity
-@Table(name = "empleado")
-//, uniqueConstraints={ //nombre de la tabla y le decimos que el teelfono sera unico para cada empleado
-//  @UniqueConstraint(columnNames = {"telefono"})})
+@Table(name = "empleado", uniqueConstraints={ //nombre de la tabla y le decimos que el teelfono sera unico para cada empleado
+@UniqueConstraint(columnNames = {"telefono"})})
 
 public class EmpleadoEntity {
 
@@ -39,6 +43,7 @@ public class EmpleadoEntity {
     private String apellidos;
 
     @Column
+    @Length(max = 10, min = 8)
     private String telefono;
 
     @Column
@@ -49,6 +54,7 @@ public class EmpleadoEntity {
 
     //CODIGO DE ACCESO
     @Column
+    @Length(max = 8, min = 4)
     private String codigoAcceso;
 
     @OneToMany(mappedBy = "empleado", cascade = CascadeType.ALL)

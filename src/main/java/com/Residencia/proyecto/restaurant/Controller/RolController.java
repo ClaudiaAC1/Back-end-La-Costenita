@@ -13,6 +13,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -34,6 +35,7 @@ public class RolController {
     private RolService rolService;
 
     @GetMapping()
+    @PreAuthorize("hasAnyAuthority('admin','cajero')")
     public CustomResponse getRol() {
         CustomResponse customResponse = new CustomResponse();
         customResponse.setData(rolService.getRols());
@@ -46,6 +48,7 @@ public class RolController {
      * @return
      */
     @GetMapping("/search-id/{id}")
+    @PreAuthorize("hasAnyAuthority('admin','cajero')")
     public CustomResponse getRolById(@PathVariable Long id) {
         CustomResponse customResponse = new CustomResponse();
         customResponse.setData(rolService.getRolById(id));
@@ -59,6 +62,7 @@ public class RolController {
     }
 
     @GetMapping("/search-name/{nombre}")
+    @PreAuthorize("hasAnyAuthority('admin','cajero')")
     public CustomResponse getRolByName(@PathVariable String nombre) {
         CustomResponse customResponse = new CustomResponse();
         customResponse.setData(rolService.getRolByNombre(nombre));
@@ -72,6 +76,7 @@ public class RolController {
     }
 
     @PostMapping("/")
+    @PreAuthorize("hasAuthority('admin')")
     public ResponseEntity<CustomResponse> saveRol(@RequestBody @Valid RolEntity rol) {
         CustomResponse customResponse = new CustomResponse();
         rolService.saveRol(rol);
@@ -84,7 +89,8 @@ public class RolController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CustomResponse> updateRol(@RequestBody RolEntity rol,
+    @PreAuthorize("hasAuthority('admin')")
+    public ResponseEntity<CustomResponse> updateRol(@RequestBody @Valid RolEntity rol,
             @PathVariable Long id) {
                 CustomResponse customResponse = new CustomResponse();
                                 
@@ -98,6 +104,7 @@ public class RolController {
     }
     
     @DeleteMapping("{id}")
+    @PreAuthorize("hasAuthority('admin')")
     public ResponseEntity<CustomResponse> deleteRol(@PathVariable Long id) {
         CustomResponse customResponse = new CustomResponse();
         Optional<RolEntity> c = rolService.getRolById(id);

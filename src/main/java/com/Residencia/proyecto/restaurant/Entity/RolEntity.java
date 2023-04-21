@@ -8,11 +8,18 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ *
+ * @author claua
+ */
 @Entity
-@Table(name="rol")
+@Table(name="rol" , uniqueConstraints={ //nombre de la tabla y le decimos que el teelfono sera unico para cada empleado
+@UniqueConstraint(columnNames = {"nombre"})})
+
 public class RolEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

@@ -11,13 +11,19 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-//import jakarta.persistence.UniqueConstraint;
+import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
-@Table(name= "mesa")
+@Table(name= "mesa",uniqueConstraints = {
+    @UniqueConstraint(columnNames = {"nombre"})
+})
 public class MesaEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -39,16 +45,4 @@ public class MesaEntity {
     @JsonProperty(access = Access.WRITE_ONLY)  //para que en api rest ignore la propiedad y pueda serializarla  
     private EmpleadoEntity empleado;
     
-    public MesaEntity(){}
-    public MesaEntity(String nombre, Byte status, String capacidad){
-        this.nombre= nombre;
-        this.status = status;
-        this.capacidad =  capacidad;
-    }
-    public MesaEntity(String nombre, Byte status, String capacidad, EmpleadoEntity empleado){
-        this.nombre= nombre;
-        this.status = status;
-        this.capacidad =  capacidad;
-        this.empleado =  empleado;
-    }
 }

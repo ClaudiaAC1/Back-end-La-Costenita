@@ -19,14 +19,14 @@ import com.Residencia.proyecto.restaurant.Utils.CustomResponse;
 
 import jakarta.validation.Valid;
 import java.util.Optional;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
 
 //import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/employee")
-// @CrossOrigin(origins = "*")
 
-// @Slf4j
 public class EmpleadoController {
 
     @Autowired
@@ -38,6 +38,8 @@ public class EmpleadoController {
      * @return
      */
     @GetMapping("")
+    @PreAuthorize("hasAnyAuthority('admin','cajero')")
+    
     public CustomResponse getEmpleados() {
 
         CustomResponse customResponse = new CustomResponse();
@@ -54,6 +56,7 @@ public class EmpleadoController {
      */
 
     @GetMapping("/search-name/{nombre}")
+    @PreAuthorize("hasAnyAuthority('admin','cajero')")
     public ResponseEntity<CustomResponse> getEmpleadoNombre(@PathVariable String nombre) {
         CustomResponse customResponse = new CustomResponse();
                 
@@ -77,6 +80,7 @@ public class EmpleadoController {
      * @return
      */
     @GetMapping("/search-id/{id}")
+    @PreAuthorize("hasAnyAuthority('admin','cajero')")
     public ResponseEntity<CustomResponse> getEmpleadoId(@PathVariable Long id) {
 
         CustomResponse customResponse = new CustomResponse();
@@ -102,6 +106,7 @@ public class EmpleadoController {
      * @return
      */
     @GetMapping("/search-tel/{telefono}")
+    @PreAuthorize("hasAnyAuthority('admin','cajero')")
     public ResponseEntity<CustomResponse> getEmpleadoTelefono(@PathVariable String telefono) {
         CustomResponse customResponse = new CustomResponse();
         customResponse.setData(empleadoService.getEmpleadoByTelefono(telefono));
@@ -123,20 +128,16 @@ public class EmpleadoController {
      * @return
      */
     @PostMapping("/")
+    @PreAuthorize("hasAuthority('admin')")
     public ResponseEntity<CustomResponse> saveEmpleado(@RequestBody @Valid EmpleadoEntity empleado) {
         CustomResponse customResponse = new CustomResponse();
+        
+        empleadoService.saveEmpleado(empleado);
+        customResponse.setData("Empleado " + empleado.getNombre() + " registrado correctamente");
+        customResponse.setHttpCode(HttpStatus.CREATED.value());
+        customResponse.setMensage(HttpStatus.CREATED.name());
 
-        if (empleadoService.saveEmpleado(empleado)) {
-            customResponse.setData("Empleado " + empleado.getNombre() + " registrado correctamente");
-            customResponse.setHttpCode(HttpStatus.CREATED.value());
-            customResponse.setMensage(HttpStatus.CREATED.name());
-    
-            return new ResponseEntity<>(customResponse, HttpStatus.CREATED);
-        }
-        else {
-            throw new BlogAppException(HttpStatus.BAD_REQUEST, "Numero de telefono ya asignado a otro empleado", (Object) customResponse.getData());
-
-        }
+        return new ResponseEntity<>(customResponse, HttpStatus.CREATED);
     }
 
     /**
@@ -147,16 +148,17 @@ public class EmpleadoController {
      * @return
      */
     @PutMapping("/{id}")
-    public ResponseEntity<CustomResponse> updateEmpleado(@RequestBody EmpleadoEntity empleado, @PathVariable Long id) {
+    @PreAuthorize("hasAuthority('admin')")
+    public ResponseEntity<CustomResponse> updateEmpleado(@RequestBody @Valid EmpleadoEntity empleado, @PathVariable Long id) {
         CustomResponse customResponse = new CustomResponse();
 
         empleadoService.updateEmpleado(empleado, id);
 
         customResponse.setData("Empleado " + empleado.getNombre() + " actualizado correctamente");
-        customResponse.setHttpCode(HttpStatus.CREATED.value());
-        customResponse.setMensage(HttpStatus.CREATED.name());
+        customResponse.setHttpCode(HttpStatus.OK.value());
+        customResponse.setMensage(HttpStatus.OK.name());
 
-        return new ResponseEntity<>(customResponse, HttpStatus.CREATED);
+        return new ResponseEntity<>(customResponse, HttpStatus.OK);
     }
 
     /**
@@ -168,6 +170,7 @@ public class EmpleadoController {
      * @return 
      **/
     @PostMapping("/valid/{id}")
+    
     public CustomResponse validCodigoAcceso(@PathVariable Long id, @RequestBody CodigoAcceso codigoAcceso){
         CustomResponse customResponse = new CustomResponse();
 
@@ -180,5 +183,14 @@ public class EmpleadoController {
             throw new BlogAppException(HttpStatus.BAD_REQUEST, "false");
          }
         
+    }
+    
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('admin')")
+    public CustomResponse deleteUser(@PathVariable Long id) {
+        CustomResponse customResponse = new CustomResponse();
+        empleadoService.deleteEmpleado(id);
+        customResponse.setData("usuario eliminado");
+        return customResponse;
     }
 }

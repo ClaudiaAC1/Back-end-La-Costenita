@@ -76,32 +76,25 @@ public class EmpleadoServiceImplements implements EmpleadoService {
      * metodo que interractua con la bd para guardar un empleado
      *
      * @param empleado
-     * @return
      */
     @Override
     //@Transactional
-    public boolean saveEmpleado(EmpleadoEntity empleado) {
-        //si existe el numero de teelfono ya en algun usuario
-        // que no permita guardarlo
-
-        if (empleadoDao.findByTelefono(empleado.getTelefono()).hashCode() == 0) {
-            empleadoDao.save(empleado);
-            return true;
-        }
-        return false;
-
+    public void saveEmpleado(EmpleadoEntity empleado) {    
+        empleadoDao.save(empleado);
     }
 
     /**
      * *
      * metodo que interractua con la bd para eliminar un empleado
      *
-     * @param empleado
+     * @param id
      */
     @Override
     @Transactional
-    public void deleteEmpleado(EmpleadoEntity empleado) {
-        empleadoDao.delete(empleado);
+    public void deleteEmpleado(Long id) {
+        Optional<EmpleadoEntity> empleadoOptional = empleadoDao.findById(id);
+        
+        empleadoDao.delete(empleadoOptional.get());
     }
 
     /**

@@ -21,6 +21,7 @@ import com.Residencia.proyecto.restaurant.Exception.BlogAppException;
 import com.Residencia.proyecto.restaurant.Repository.CategoriaDao;
 
 import jakarta.validation.Valid;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 @RestController
 @RequestMapping("/category")
@@ -35,6 +36,7 @@ public class CategoriaController {
      * @return
      */
     @GetMapping("")
+    @PreAuthorize("hasAnyAuthority('admin','cajero')")
     public CustomResponse listarCategorias() {
         CustomResponse customResponse = new CustomResponse();
         customResponse.setData(categoriaService.getCategorias());
@@ -48,6 +50,7 @@ public class CategoriaController {
      * @return
      */
     @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('admin')")
     public CustomResponse obtenerCategoriaId(@PathVariable Long id) {
         CustomResponse customResponse = new CustomResponse();
         customResponse.setData(categoriaService.getCategoriaById(id));
@@ -67,8 +70,10 @@ public class CategoriaController {
      * @return
      */
     @PostMapping("")
+    @PreAuthorize("hasAuthority('admin')")
     public ResponseEntity<CustomResponse> guardaCategoria(@Valid @RequestBody CategoriaEntity categoria) {
         CustomResponse customResponse = new CustomResponse();
+        
         categoriaService.saveCategoria(categoria);
         customResponse.setData("Categoria " + categoria.getNombre() + " registrada correctamente");
         customResponse.setHttpCode(HttpStatus.CREATED.value());
@@ -86,7 +91,8 @@ public class CategoriaController {
      */
    
     @PutMapping("/{id}")
-    public ResponseEntity<CustomResponse> updateCategoria(@RequestBody CategoriaEntity categoria,
+    @PreAuthorize("hasAuthority('admin')")
+    public ResponseEntity<CustomResponse> updateCategoria(@RequestBody @Valid CategoriaEntity categoria,
             @PathVariable Long id) {
                 CustomResponse customResponse = new CustomResponse();
                                 
@@ -108,6 +114,7 @@ public class CategoriaController {
      * @return
      */
     @DeleteMapping("{id}")
+    @PreAuthorize("hasAuthority('admin')")
     public ResponseEntity<CustomResponse> eliminarCategoria(@PathVariable Long id) {
         CustomResponse customResponse = new CustomResponse();
         Optional<CategoriaEntity> c = categoriaService.getCategoriaById(id);
