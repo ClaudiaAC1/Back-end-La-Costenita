@@ -7,10 +7,28 @@ package com.Residencia.proyecto.restaurant.Controller;
 import com.Residencia.proyecto.restaurant.Entity.PedidoEntity;
 import com.Residencia.proyecto.restaurant.Repository.PedidoDao;
 import com.Residencia.proyecto.restaurant.Entity.Dto.Pedido;
+import com.Residencia.proyecto.restaurant.Entity.Dto.PedidoProducto;
+import com.Residencia.proyecto.restaurant.Entity.MesaEntity;
+import com.Residencia.proyecto.restaurant.Entity.Pedido_ProductoEntity;
+import com.Residencia.proyecto.restaurant.Entity.ProductoEntity;
+import com.Residencia.proyecto.restaurant.Exception.BlogAppException;
+import com.Residencia.proyecto.restaurant.Repository.MesaDao;
+import com.Residencia.proyecto.restaurant.Repository.PedidoProductoDao;
+import com.Residencia.proyecto.restaurant.Repository.ProductoDao;
+import com.Residencia.proyecto.restaurant.Services.MesaService;
+import com.Residencia.proyecto.restaurant.Services.ProductoService;
+import com.Residencia.proyecto.restaurant.Services.PedidoService;
+import com.Residencia.proyecto.restaurant.Utils.CustomResponse;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -21,26 +39,113 @@ import org.springframework.web.bind.annotation.RestController;
  * @author claua
  */
 @RestController
-@RequestMapping("/pedido")
+@RequestMapping("/order")
 public class PedidoController {
-    
+
     @Autowired
-    private PedidoDao pedido;
-    
-    @GetMapping()
-    public List<PedidoEntity> getPedido(){
-        return (List<PedidoEntity>) pedido.findAll();
-    }
-    
+    private PedidoService pedidoService;
+
+    @Autowired
+    private MesaService mesaService;
+
+
     /**
      *
-     * @param p
+     * @param @return Lista de pedidos
+     */
+    @GetMapping()
+    public CustomResponse getPedidos() {
+        CustomResponse customResponse = new CustomResponse();
+        customResponse.setData(pedidoService.getPedidos());
+        return customResponse;
+    }
+
+    /**
+     * Obtener pedido con base a id
+     *
+     * @param id
+     * @return Pedido con base a id
+     */
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getPedidoId(@PathVariable Long id) {
+        CustomResponse customResponse = new CustomResponse();
+        Optional<PedidoEntity> pedidoAux = pedidoService.getPedidoById(id);
+
+        if (!pedidoAux.isPresent()) {
+            throw new BlogAppException(HttpStatus.BAD_REQUEST, "Sin registro de ese pedido");
+        }
+        customResponse.setData(pedidoAux);
+        return new ResponseEntity<>(customResponse, HttpStatus.OK);
+
+    }
+
+    /**
+     * Guardar pedido
+     *
+     * @param pedido
      * @return
      */
     @PostMapping()
-    public String guardarPedido(@RequestBody PedidoEntity p){
-        pedido.save(p);
-        return "save";
+    public ResponseEntity<?> guardarPedido(@RequestBody Pedido pedido) {
+        CustomResponse customResponse = new CustomResponse();
+
+        PedidoEntity pedidoAux = new PedidoEntity();
+        Optional<MesaEntity> mesaAux
+                = mesaService.getMesa(pedido.getIdMesa());
+
+        if (!mesaAux.isPresent()) {
+            throw new BlogAppException(HttpStatus.BAD_REQUEST,
+                    "Sin registro de esa mesa");
+        }
+
+        pedidoAux.setMesa(mesaAux.get());
+        pedidoService.savePedido(pedidoAux);
+        return new ResponseEntity<>(customResponse, HttpStatus.OK);
+
     }
+
+    /**
+     * Actualiza el pedido
+     * Ya que solo pedido se registra con el idMesa, 
+     * cuando se actualiza solo es para cambiar la mesa asignada 
+     *
+     * @param id
+     * @param pedido
+     * @return
+     */
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updatePedido(@PathVariable Long id, @RequestBody Pedido pedido) {
+        CustomResponse customResponse = new CustomResponse();
+        Optional<PedidoEntity> pedidoAux = pedidoService.getPedidoById(id);
+        Optional <MesaEntity> mesaAux = mesaService.getMesa(pedido.getIdMesa());
+       
+        if(!mesaAux.isPresent()){
+            throw new BlogAppException(HttpStatus.BAD_REQUEST,
+                    "Sin registro de esa mesa");
+         }
+       
+        pedidoService.updatePedido(pedidoAux.get(), id, mesaAux.get());
+        
+        customResponse.setMensage("Mesa actualizada");
+        return new ResponseEntity<>(customResponse, HttpStatus.OK);
+
+    }
+
     
+    /**
+     * Elimina el pedido
+     * Ya que existen relaciones con otras tablas
+     * tambien elimina su registro en ellas
+     *
+     * @param id
+     * @return
+     */
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deletePedido(@PathVariable Long id){
+        CustomResponse customResponse = new CustomResponse();
+        pedidoService.deletePedido(id);
+
+        return new ResponseEntity<>(customResponse, HttpStatus.OK);  
+    }
+
 }

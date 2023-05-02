@@ -12,5 +12,5 @@ import org.springframework.data.repository.CrudRepository;
  * @author claua
  */
 public interface PedidoProductoDao extends CrudRepository<Pedido_ProductoEntity, Long>{
-    
+    Iterable<Pedido_ProductoEntity> getPedidoProductById(Long idPedido);
 }

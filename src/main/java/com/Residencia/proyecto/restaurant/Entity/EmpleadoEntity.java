@@ -1,5 +1,6 @@
 package com.Residencia.proyecto.restaurant.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import jakarta.persistence.CascadeType;
@@ -16,6 +17,7 @@ import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
 import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.NotBlank;
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 import org.hibernate.validator.constraints.Length;
@@ -28,7 +30,9 @@ import org.hibernate.validator.constraints.Length;
 @Table(name = "empleado", uniqueConstraints={ //nombre de la tabla y le decimos que el teelfono sera unico para cada empleado
 @UniqueConstraint(columnNames = {"telefono"})})
 
-public class EmpleadoEntity {
+public class EmpleadoEntity implements Serializable{
+    
+    private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -57,6 +61,7 @@ public class EmpleadoEntity {
     @Length(max = 8, min = 4)
     private String codigoAcceso;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "empleado", cascade = CascadeType.ALL)
     private Set<MesaEntity> mesas = new HashSet<>();
 

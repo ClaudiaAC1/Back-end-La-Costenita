@@ -13,8 +13,11 @@ import lombok.NoArgsConstructor;
  * @author claua
  */
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
-public class Pedido {
-    private Long idMesa;     
+@AllArgsConstructor
+public class ActProducPed {
+    private String descripcion;
+    private Integer cantidad;
+    
+    
 }

@@ -52,9 +52,10 @@ public class SecurityConfig {
                 .csrf()
                 .disable()
                 .authorizeHttpRequests()
-                .requestMatchers("/login/**", "/user", "/swagger-ui/**")
+                .requestMatchers("/login/**", "/user", "/order/**")
                     .permitAll() //aqui las rutas a las que todos podran acceder
                 .anyRequest()
+                
                     .authenticated()
                 .and()
                     .sessionManagement()
