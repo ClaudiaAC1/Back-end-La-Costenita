@@ -1,5 +1,6 @@
 package com.Residencia.proyecto.restaurant.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -13,12 +14,16 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.NotBlank;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "categoria",uniqueConstraints={ //nombre de la tabla y le decimos que el teelfono sera unico para cada empleado
 @UniqueConstraint(columnNames = {"nombre"})})
 
-public class CategoriaEntity {
+public class CategoriaEntity implements Serializable{
+    
+    private static final long serialVersionUID = 1L;
+    
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -27,6 +32,7 @@ public class CategoriaEntity {
     @NotBlank (message = "el nombre no puede estar vacio")
     private String nombre;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "categoria", cascade= CascadeType.ALL)
     private Set<ProductoEntity> productos =  new HashSet<>();
 
@@ -62,4 +68,5 @@ public class CategoriaEntity {
         for (ProductoEntity producto : productos) {
             producto.setCategoria(this);
         }
-    }}
+    }
+}

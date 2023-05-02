@@ -57,7 +57,7 @@ public class GlobalExceptionHandler {
         
         errorDetalles.setData(ex.getMessage());
         errorDetalles.setHttpCode(HttpStatus.BAD_REQUEST.value());
-        errorDetalles.setMensage("Valor ya existente en otro registro");
+        errorDetalles.setMensage("ERROR");
 
         return new ResponseEntity<>(errorDetalles, HttpStatus.BAD_REQUEST);
     }

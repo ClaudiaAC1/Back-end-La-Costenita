@@ -92,7 +92,7 @@ public class ProductoController {
         }
         producto.setCategoria(categoriaOptional.get());
         productoService.saveProducto(producto);
-        customResponse.setMensage("Producto guardado"+ producto.getNombre()+ "exitosamente");
+        customResponse.setMensage("Producto "+ producto.getNombre()+ " guardado exitosamente");
         return new ResponseEntity<>(customResponse, HttpStatus.CREATED);
     }
 

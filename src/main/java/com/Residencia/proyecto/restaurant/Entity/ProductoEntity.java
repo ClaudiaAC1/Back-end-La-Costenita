@@ -15,6 +15,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 import lombok.Data;
@@ -22,7 +23,10 @@ import lombok.Data;
 @Data
 @Entity 
 @Table(name="producto")
-public class ProductoEntity {
+public class ProductoEntity implements Serializable{
+    
+    private static final long serialVersionUID = 1L;
+    
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;

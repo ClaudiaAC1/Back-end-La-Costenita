@@ -4,8 +4,20 @@
  */
 package com.Residencia.proyecto.restaurant.Security;
 
+import java.security.Key;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Function;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Component;
+
 import com.Residencia.proyecto.restaurant.Exception.BlogAppException;
 import com.Residencia.proyecto.restaurant.Utils.CustomResponse;
+
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -15,15 +27,6 @@ import io.jsonwebtoken.SignatureException;
 import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import java.security.Key;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.Function;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Component;
 
 /**
  *
@@ -77,7 +80,7 @@ public class JwtService {
                 .setClaims(claims)
                 .setSubject(userName)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis()+1000*60*60)) //8 horas de acceso (System.currentTimeMillis()+1000*60*480)
+                .setExpiration(new Date(System.currentTimeMillis()+1000*60*180))//(3 horas ahora) //8 horas de acceso (System.currentTimeMillis()+1000*60*480)
                 .signWith(getSignKey(), SignatureAlgorithm.HS256).compact();
     }
 
@@ -90,7 +93,6 @@ public class JwtService {
      * Metodo que validar el token 
      *
      * @param token
-     * @param authentication
      * @return  customResponse
      */
     public CustomResponse validarToken(String token) {
@@ -103,19 +105,19 @@ public class JwtService {
             customResponse.setData(true);
            
         } catch (SignatureException ex) {
-            throw new BlogAppException(HttpStatus.UNAUTHORIZED, "Firma JWT no valida");
+            throw new BlogAppException(HttpStatus.UNAUTHORIZED, "Firma JWT no valida", false);
             
         } catch (MalformedJwtException ex) {
-            throw new BlogAppException(HttpStatus.UNAUTHORIZED, "Firma JWT no valida");
+            throw new BlogAppException(HttpStatus.UNAUTHORIZED, "Firma JWT no valida", false);
 
         } catch (ExpiredJwtException ex) {
-            throw new BlogAppException(HttpStatus.UNAUTHORIZED, "Token JWT caducado");
+            throw new BlogAppException(HttpStatus.UNAUTHORIZED, "Token JWT caducado", false);
 
         } catch (UnsupportedJwtException ex) {
-            throw new BlogAppException(HttpStatus.UNAUTHORIZED, "Token JWT caducado");
+            throw new BlogAppException(HttpStatus.UNAUTHORIZED, "Token JWT caducado", false);
 			
         } catch (IllegalArgumentException ex) {
-            throw new BlogAppException(HttpStatus.UNAUTHORIZED, "La cadena claims JWT esta vacia");
+            throw new BlogAppException(HttpStatus.UNAUTHORIZED, "La cadena claims JWT esta vacia", false);
 
         }
 

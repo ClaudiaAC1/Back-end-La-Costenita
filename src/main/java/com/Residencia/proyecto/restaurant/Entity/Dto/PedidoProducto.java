@@ -15,6 +15,10 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Pedido {
-    private Long idMesa;     
+public class PedidoProducto {
+    private Integer cantidad;
+    private String descripcion;
+    private Long idPedido;
+    private Long idProducto;
+    
 }

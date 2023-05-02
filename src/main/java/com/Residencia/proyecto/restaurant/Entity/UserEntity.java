@@ -4,7 +4,6 @@
  */
 package com.Residencia.proyecto.restaurant.Entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -12,6 +11,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
+import java.io.Serializable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -27,7 +27,9 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserEntity {
+public class UserEntity implements Serializable{
+    
+    private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -42,8 +44,7 @@ public class UserEntity {
     @Column(nullable = false)
     private String cel;
     
-    @Column(nullable = false)
-    @JsonIgnore
+    @Column(nullable = false)    
     private String password;
     
     @Column(nullable = false)
