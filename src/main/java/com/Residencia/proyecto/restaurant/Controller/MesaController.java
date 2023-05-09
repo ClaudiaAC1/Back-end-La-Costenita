@@ -1,6 +1,5 @@
 package com.Residencia.proyecto.restaurant.Controller;
 
-
 import com.Residencia.proyecto.restaurant.Entity.EmpleadoEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,15 +30,14 @@ public class MesaController {
 
     @Autowired
     private MesaService mesaService;
-    
+
     @Autowired
-    private EmpleadoService empleadoService; 
+    private EmpleadoService empleadoService;
 
     /**
-     * 
-     * @return lista de mesas 
+     *
+     * @return lista de mesas
      */
-
     @GetMapping("")
     @PreAuthorize("hasAnyAuthority('admin','cajero')")
     public CustomResponse getMesas() {
@@ -48,110 +46,106 @@ public class MesaController {
         customResponse.setData(mesaService.getMesas());
         return customResponse;
     }
-    
-    /**
-     * 
-     * @param nombre
-     * @return objeto mesa con sus datos 
-     */
 
+    /**
+     *
+     * @param nombre
+     * @return objeto mesa con sus datos
+     */
     @GetMapping("search-name/{nombre}")
     @PreAuthorize("hasAnyAuthority('admin','cajero')")
-    public ResponseEntity<CustomResponse> getMesaNombre(@PathVariable String nombre) {
-
+    public ResponseEntity<?> getMesaNombre(@PathVariable String nombre) {
         CustomResponse customResponse = new CustomResponse();
-        customResponse.setData(mesaService.getMesa(nombre));
+        Optional<MesaEntity> m = mesaService.getMesa(nombre);
 
-        if (customResponse.getData().hashCode() == 0) {
+        if (!m.isPresent()) {
             throw new BlogAppException(HttpStatus.BAD_REQUEST, "Sin registro de esa mesa");
-
-        } else {
-            Optional<MesaEntity> m = mesaService.getMesa(nombre);
-            return new ResponseEntity<>(customResponse, HttpStatus.OK);
         }
+        customResponse.setData(m);
+        return new ResponseEntity<>(customResponse, HttpStatus.OK);
+
     }
 
     /**
-     * 
+     *
      * @param id
      * @return objeto mesa con coincidencia en id
      */
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyAuthority('admin','cajero')")
-    public ResponseEntity<CustomResponse> getMesaId(@PathVariable Long id) {
-
+    public ResponseEntity<?> getMesaId(@PathVariable Long id) {
         CustomResponse customResponse = new CustomResponse();
-        customResponse.setData(mesaService.getMesa(id));
+        Optional<MesaEntity> m = mesaService.getMesa(id);
 
-        if (customResponse.getData().hashCode() == 0) {
+        if (!m.isPresent()) {
             throw new BlogAppException(HttpStatus.BAD_REQUEST, "Sin registro de esa mesa");
-
-        } else {
-            Optional<MesaEntity> m = mesaService.getMesa(id);
-            return new ResponseEntity<>(customResponse, HttpStatus.OK);
         }
+        customResponse.setData(m);
+        return new ResponseEntity<>(customResponse, HttpStatus.OK);
+
     }
-    
+
     /**
-     * 
+     *
      * @param mesa
-     * @return 
+     * @return
      */
     @PostMapping("/")
     @PreAuthorize("hasAnyAuthority('admin','cajero')")
-    public ResponseEntity<CustomResponse> saveTable(@RequestBody @Valid MesaEntity mesa){
+    public ResponseEntity<?> saveTable(@RequestBody @Valid MesaEntity mesa) {
         CustomResponse customResponse = new CustomResponse();
 
-        if(mesa.getEmpleado() == null){
-            
+        if (mesa.getEmpleado() == null) {
+
             throw new BlogAppException(HttpStatus.BAD_REQUEST, "Asignar mesero a la mesa");
         }
-        
-        Optional <EmpleadoEntity> empleadoOptional = empleadoService
-                              .getEmpleadoById(mesa.getEmpleado().getId());
-        
-        if(!empleadoOptional.isPresent()){
+
+        Optional<EmpleadoEntity> empleadoOptional = empleadoService
+                .getEmpleadoById(mesa.getEmpleado().getId());
+
+        if (!empleadoOptional.isPresent()) {
             throw new BlogAppException(HttpStatus.BAD_REQUEST, "Mesero asignado no encontrado");
         }
-        
-        mesa.setEmpleado(empleadoOptional.get());        
+
+        mesa.setEmpleado(empleadoOptional.get());
         mesaService.saveMesa(mesa);
-        return new ResponseEntity<>(customResponse, HttpStatus.CREATED);        
-    
+        return new ResponseEntity<>(customResponse, HttpStatus.CREATED);
+
     }
 
     /**
-     * 
+     *
      * @param mesa
      * @param id
      * @return leyenda con creado o no correctamente
      */
     @PutMapping("/{id}")
     @PreAuthorize("hasAnyAuthority('admin','cajero')")
-    public ResponseEntity<CustomResponse> updateMesa(@RequestBody @Valid MesaEntity mesa, @PathVariable Long id) {
-        CustomResponse customResponse = new CustomResponse();        
-        
+    public ResponseEntity<?> updateMesa(@RequestBody @Valid MesaEntity mesa, @PathVariable Long id) {
+        CustomResponse customResponse = new CustomResponse();
+
         mesaService.updateMesa(mesa, id);
         customResponse.setData("Mesa actualizada correctamente");
         customResponse.setHttpCode(HttpStatus.CREATED.value());
         customResponse.setMensage(HttpStatus.CREATED.name());
-        
-        return new ResponseEntity<>(customResponse, HttpStatus.CREATED); 
+
+        return new ResponseEntity<>(customResponse, HttpStatus.CREATED);
     }
-    
+
     /**
      * Eliminar mesa
+     *
      * @param id
-     * @return 
+     * @return
      */
     @DeleteMapping("{id}")
     @PreAuthorize("hasAuthority('admin')")
-    public ResponseEntity<CustomResponse> deleteTable(@PathVariable Long id){
+    public ResponseEntity<?> deleteTable(@PathVariable Long id) {
         CustomResponse customResponse = new CustomResponse();
         mesaService.deleteMesa(id);
 
-        return new ResponseEntity<>(customResponse, HttpStatus.OK);  
+        return new ResponseEntity<>(customResponse, HttpStatus.OK);
 
-    }   
+    }
 
 }

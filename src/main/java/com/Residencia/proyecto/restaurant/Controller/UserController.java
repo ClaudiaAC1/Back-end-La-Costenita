@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.Residencia.proyecto.restaurant.Utils.CustomResponse;
 import jakarta.validation.Valid;
+import java.util.Optional;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -25,10 +26,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 public class UserController {
 
     @Autowired
-    private UserService userService; 
+    private UserService userService;
 
     @GetMapping()
-    @PreAuthorize("hasAuthority('admin')") 
+    @PreAuthorize("hasAuthority('admin')")
     public CustomResponse getUsers() {
         CustomResponse customResponse = new CustomResponse();
         customResponse.setData(userService.getUsers());
@@ -37,33 +38,34 @@ public class UserController {
 
     @GetMapping("/{id}")
     @PreAuthorize("hasAuthority('admin')")
-    public ResponseEntity<CustomResponse> getUserById(@PathVariable Long id) {
+    public ResponseEntity<?> getUserById(@PathVariable Long id) {
         CustomResponse customResponse = new CustomResponse();
-        customResponse.setData(userService.getUserById(id));
+        Optional<UserEntity> u = userService.getUserById(id);
 
-        if (customResponse.getData().hashCode() == 0) {
-            throw new BlogAppException(HttpStatus.BAD_REQUEST, "Sin registro de ese id");
-
-        } else {
-            return new ResponseEntity<>(customResponse, HttpStatus.OK);
+        if (!u.isPresent()) {
+            throw new BlogAppException(HttpStatus.BAD_REQUEST, "Sin registro de ese Usuario");
         }
+        customResponse.setData(u);
+        return new ResponseEntity<>(customResponse, HttpStatus.OK);
+
     }
 
     @PostMapping()
-    public CustomResponse saveUser(@RequestBody @Valid UserEntity user) {
+    public ResponseEntity<?> saveUser(@RequestBody @Valid UserEntity user) {
         CustomResponse customResponse = new CustomResponse();
         userService.saveUser(user);
-        customResponse.setData("usuario creado");
-        return customResponse;
+        customResponse.setData("usuario creado exitosamente");
+        customResponse.setHttpCode(HttpStatus.CREATED.value());
+        return new ResponseEntity<>(customResponse, HttpStatus.CREATED);
     }
-    
+
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('admin')")
-    public CustomResponse updateUser(@RequestBody @Valid UserEntity user, @PathVariable Long id){
+    public ResponseEntity<?> updateUser(@RequestBody @Valid UserEntity user, @PathVariable Long id) {
         CustomResponse customResponse = new CustomResponse();
         userService.updateUser(user, id);
         customResponse.setData("usuario actualizado");
-         return customResponse;
+        return new ResponseEntity<>(customResponse, HttpStatus.CREATED);
     }
 
     @DeleteMapping("/{id}")

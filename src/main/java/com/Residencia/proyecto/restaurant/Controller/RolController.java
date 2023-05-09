@@ -51,33 +51,32 @@ public class RolController {
     @PreAuthorize("hasAnyAuthority('admin','cajero')")
     public CustomResponse getRolById(@PathVariable Long id) {
         CustomResponse customResponse = new CustomResponse();
-        customResponse.setData(rolService.getRolById(id));
+        Optional<RolEntity> r = rolService.getRolById(id);
 
-        if (customResponse.getData().hashCode() == 0) {
-            throw new BlogAppException(HttpStatus.BAD_REQUEST, "Sin registro de ese id");
-        } else {
-            throw new BlogAppException(HttpStatus.OK, "ok", (Object) customResponse.getData());
-
+        if (!r.isPresent()) {
+            throw new BlogAppException(HttpStatus.BAD_REQUEST, "Sin registro de ese rol");
         }
+        customResponse.setData(r);
+        throw new BlogAppException(HttpStatus.OK, "ok", (Object) customResponse.getData());
+
     }
 
     @GetMapping("/search-name/{nombre}")
     @PreAuthorize("hasAnyAuthority('admin','cajero')")
-    public CustomResponse getRolByName(@PathVariable String nombre) {
+    public ResponseEntity<?> getRolByName(@PathVariable String nombre) {
         CustomResponse customResponse = new CustomResponse();
-        customResponse.setData(rolService.getRolByNombre(nombre));
+        Optional<RolEntity> r = rolService.getRolByNombre(nombre);
 
-        if (customResponse.getData().hashCode() == 0) {
+        if (!r.isPresent()) {
             throw new BlogAppException(HttpStatus.BAD_REQUEST, "Sin registro de ese rol");
-        } else {
-            throw new BlogAppException(HttpStatus.OK, "ok", (Object) customResponse.getData());
-
-        } 
+        }
+        customResponse.setData(r);
+        return new ResponseEntity<>(customResponse, HttpStatus.OK);
     }
 
     @PostMapping("/")
     @PreAuthorize("hasAuthority('admin')")
-    public ResponseEntity<CustomResponse> saveRol(@RequestBody @Valid RolEntity rol) {
+    public ResponseEntity<?> saveRol(@RequestBody @Valid RolEntity rol) {
         CustomResponse customResponse = new CustomResponse();
         rolService.saveRol(rol);
         customResponse.setData("Rol " + rol.getNombre() + " registrado correctamente");
@@ -90,22 +89,22 @@ public class RolController {
 
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('admin')")
-    public ResponseEntity<CustomResponse> updateRol(@RequestBody @Valid RolEntity rol,
+    public ResponseEntity<?> updateRol(@RequestBody @Valid RolEntity rol,
             @PathVariable Long id) {
-                CustomResponse customResponse = new CustomResponse();
-                                
-               rolService.updateRol(rol, id);
-        
-                customResponse.setData("Rol " + rol.getNombre() + " actualizada correctamente");
-                customResponse.setHttpCode(HttpStatus.OK.value());
-                customResponse.setMensage(HttpStatus.OK.name());
-        
-                return new ResponseEntity<>(customResponse, HttpStatus.OK);
+        CustomResponse customResponse = new CustomResponse();
+
+        rolService.updateRol(rol, id);
+
+        customResponse.setData("Rol actualizado correctamente");
+        customResponse.setHttpCode(HttpStatus.OK.value());
+        customResponse.setMensage(HttpStatus.OK.name());
+
+        return new ResponseEntity<>(customResponse, HttpStatus.OK);
     }
-    
+
     @DeleteMapping("{id}")
     @PreAuthorize("hasAuthority('admin')")
-    public ResponseEntity<CustomResponse> deleteRol(@PathVariable Long id) {
+    public ResponseEntity<?> deleteRol(@PathVariable Long id) {
         CustomResponse customResponse = new CustomResponse();
         Optional<RolEntity> c = rolService.getRolById(id);
 

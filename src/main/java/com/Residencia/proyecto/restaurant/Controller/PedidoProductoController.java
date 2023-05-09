@@ -98,6 +98,7 @@ public class PedidoProductoController {
                         pedidoProducto.getDescripcion(), productoAux.get());
         
         ppService.savePedidoP(pedido_producto);
+        customResponse.setData("Producto asignado al pedido exitosamente");
         return new ResponseEntity<>(customResponse, HttpStatus.OK);
     }
 
@@ -112,8 +113,8 @@ public class PedidoProductoController {
         CustomResponse customResponse = new CustomResponse();
         ppService.deletePedidoP(id);
         
-        return new ResponseEntity<>(customResponse, HttpStatus.OK);        
-        
+        customResponse.setData("Producto eliminado del pedido exitosamente");
+        return new ResponseEntity<>(customResponse, HttpStatus.OK);               
     }
     
     
@@ -138,6 +139,7 @@ public class PedidoProductoController {
         ppAux.get().setDescripcion(producto.getDescripcion());
         
         ppService.updatePedidoP(ppAux.get(), id);
+        customResponse.setData("Producto actualizado del pedido exitosamente");
         return new ResponseEntity<>(customResponse, HttpStatus.OK);        
     }
 }

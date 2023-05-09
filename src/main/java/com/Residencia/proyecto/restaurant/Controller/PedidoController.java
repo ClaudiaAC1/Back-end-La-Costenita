@@ -5,21 +5,12 @@
 package com.Residencia.proyecto.restaurant.Controller;
 
 import com.Residencia.proyecto.restaurant.Entity.PedidoEntity;
-import com.Residencia.proyecto.restaurant.Repository.PedidoDao;
 import com.Residencia.proyecto.restaurant.Entity.Dto.Pedido;
-import com.Residencia.proyecto.restaurant.Entity.Dto.PedidoProducto;
 import com.Residencia.proyecto.restaurant.Entity.MesaEntity;
-import com.Residencia.proyecto.restaurant.Entity.Pedido_ProductoEntity;
-import com.Residencia.proyecto.restaurant.Entity.ProductoEntity;
 import com.Residencia.proyecto.restaurant.Exception.BlogAppException;
-import com.Residencia.proyecto.restaurant.Repository.MesaDao;
-import com.Residencia.proyecto.restaurant.Repository.PedidoProductoDao;
-import com.Residencia.proyecto.restaurant.Repository.ProductoDao;
 import com.Residencia.proyecto.restaurant.Services.MesaService;
-import com.Residencia.proyecto.restaurant.Services.ProductoService;
 import com.Residencia.proyecto.restaurant.Services.PedidoService;
 import com.Residencia.proyecto.restaurant.Utils.CustomResponse;
-import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -31,7 +22,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -100,6 +90,7 @@ public class PedidoController {
 
         pedidoAux.setMesa(mesaAux.get());
         pedidoService.savePedido(pedidoAux);
+        customResponse.setData("Pedido guardado exitosamente");
         return new ResponseEntity<>(customResponse, HttpStatus.OK);
 
     }
@@ -126,7 +117,7 @@ public class PedidoController {
        
         pedidoService.updatePedido(pedidoAux.get(), id, mesaAux.get());
         
-        customResponse.setMensage("Mesa actualizada");
+        customResponse.setMensage("Mesa actualizada exitosamente");
         return new ResponseEntity<>(customResponse, HttpStatus.OK);
 
     }
@@ -145,6 +136,7 @@ public class PedidoController {
         CustomResponse customResponse = new CustomResponse();
         pedidoService.deletePedido(id);
 
+        customResponse.setData("Pedido eliminado exitosamente");
         return new ResponseEntity<>(customResponse, HttpStatus.OK);  
     }
 

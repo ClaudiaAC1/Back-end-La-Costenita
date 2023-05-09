@@ -56,7 +56,7 @@ public class ProductoEntity implements Serializable{
     @Transient
     private String categoriaName;
     
-    @JsonIgnore
+    @JsonIgnore    
     @OneToMany(mappedBy = "idProducto", cascade= CascadeType.ALL)
     private Set<Pedido_ProductoEntity> producto_pedido =  new HashSet<>();
             

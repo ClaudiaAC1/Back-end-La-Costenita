@@ -55,18 +55,16 @@ public class ProductoController {
      */
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyAuthority('admin','cajero')")
-    public ResponseEntity<CustomResponse> obtenerProductoId(@PathVariable Long id) {
+    public ResponseEntity<?> obtenerProductoId(@PathVariable Long id) {
         CustomResponse customResponse = new CustomResponse();
-        
-        customResponse.setData(productoService.getProductoById(id));
+        Optional<ProductoEntity> p = productoService.getProductoById(id);
 
-        if (customResponse.getData().hashCode() == 0) {
-            throw new BlogAppException(HttpStatus.BAD_REQUEST, "Sin registro de ese id");
-        } else {
-            Optional<ProductoEntity> p = productoService.getProductoById(id);
-            return new ResponseEntity<>(customResponse, HttpStatus.OK);
-
+        if (!p.isPresent()) {
+            throw new BlogAppException(HttpStatus.BAD_REQUEST, "Sin registro de ese producto");
         }
+        customResponse.setData(p);
+        return new ResponseEntity<>(customResponse, HttpStatus.OK);
+
     }
 
     /**
@@ -76,23 +74,23 @@ public class ProductoController {
      */
     @PostMapping("")
     @PreAuthorize("hasAuthority('admin')")
-    public ResponseEntity<CustomResponse> guardarProducto(@RequestBody @Valid ProductoEntity producto) {
+    public ResponseEntity<?> guardarProducto(@RequestBody @Valid ProductoEntity producto) {
         CustomResponse customResponse = new CustomResponse();
-            
-        if(producto.getCategoria() == null){
-            
+
+        if (producto.getCategoria() == null) {
+
             throw new BlogAppException(HttpStatus.BAD_REQUEST, "Asignar categoria al producto");
         }
-        
+
         Optional<CategoriaEntity> categoriaOptional = categoriaService
                 .getCategoriaById(producto.getCategoria().getId());
 
         if (!categoriaOptional.isPresent()) {
-            return ResponseEntity.unprocessableEntity().build();
+            throw new BlogAppException(HttpStatus.BAD_REQUEST, "Sin registro de esa categoria");
         }
         producto.setCategoria(categoriaOptional.get());
         productoService.saveProducto(producto);
-        customResponse.setMensage("Producto "+ producto.getNombre()+ " guardado exitosamente");
+        customResponse.setMensage("Producto guardado exitosamente");
         return new ResponseEntity<>(customResponse, HttpStatus.CREATED);
     }
 
@@ -104,15 +102,12 @@ public class ProductoController {
      */
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('admin')")
-    public ResponseEntity<CustomResponse> actualizarProducto(@RequestBody @Valid ProductoEntity producto, @PathVariable Long id) {
+    public ResponseEntity<?> actualizarProducto(@RequestBody @Valid ProductoEntity producto, @PathVariable Long id) {
 
         CustomResponse customResponse = new CustomResponse();
 
         productoService.updateProducto(producto, id);
-
-        customResponse.setData("Producto " + producto.getNombre() + " actualizado correctamente");
-        customResponse.setHttpCode(HttpStatus.OK.value());
-        customResponse.setMensage(HttpStatus.OK.name());
+        customResponse.setData("Producto actualizado correctamente");
 
         return new ResponseEntity<>(customResponse, HttpStatus.OK);
 
@@ -126,7 +121,7 @@ public class ProductoController {
      */
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAuthority('admin')")
-    public ResponseEntity<CustomResponse> eliminarProducto(@PathVariable Long id) {
+    public ResponseEntity<?> eliminarProducto(@PathVariable Long id) {
         CustomResponse customResponse = new CustomResponse();
         Optional<ProductoEntity> productoOptional = productoService.getProductoById(id);
 
@@ -134,6 +129,7 @@ public class ProductoController {
             return new ResponseEntity<>(customResponse, HttpStatus.BAD_REQUEST);
         }
         productoService.deleteProducto(productoOptional.get());
+        customResponse.setData("Producto eliminado correctamente");
         return new ResponseEntity<>(customResponse, HttpStatus.OK);
     }
 
