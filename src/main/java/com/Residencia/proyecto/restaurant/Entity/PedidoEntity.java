@@ -46,9 +46,15 @@ public class PedidoEntity implements Serializable {
     @Transient
     private Long id_mesa;
     
+//    @JsonIgnore
     @OneToMany(mappedBy = "idPedido", cascade = CascadeType.ALL)
     private Set<Pedido_ProductoEntity> pedido_producto = new HashSet<>();
   
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "id_cuenta")
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    private CuentaEntity idCuenta;
+    
     
     public PedidoEntity() {
         this.fechaYhora = FechaYhora.obtenerFechaYHoraActual();
@@ -93,6 +99,7 @@ public class PedidoEntity implements Serializable {
     }
 
     @JsonBackReference
+//    @JsonManagedReference
     public MesaEntity getMesa() {
         return idMesa;
     }
@@ -108,4 +115,14 @@ public class PedidoEntity implements Serializable {
     public void setId_Mesa(Long idMesa){
         this.id_mesa= idMesa;
     }
+
+    public CuentaEntity getIdCuenta() {
+        return idCuenta;
+    }
+
+    public void setIdCuenta(CuentaEntity idCuenta) {
+        this.idCuenta = idCuenta;
+    }
+    
+    
 }

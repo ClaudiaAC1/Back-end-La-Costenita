@@ -4,10 +4,12 @@
  */
 package com.Residencia.proyecto.restaurant.Controller;
 
+import com.Residencia.proyecto.restaurant.Entity.CuentaEntity;
 import com.Residencia.proyecto.restaurant.Entity.PedidoEntity;
 import com.Residencia.proyecto.restaurant.Entity.Dto.Pedido;
 import com.Residencia.proyecto.restaurant.Entity.MesaEntity;
 import com.Residencia.proyecto.restaurant.Exception.BlogAppException;
+import com.Residencia.proyecto.restaurant.Repository.CuentaDao;
 import com.Residencia.proyecto.restaurant.Services.MesaService;
 import com.Residencia.proyecto.restaurant.Services.PedidoService;
 import com.Residencia.proyecto.restaurant.Utils.CustomResponse;
@@ -37,7 +39,9 @@ public class PedidoController {
 
     @Autowired
     private MesaService mesaService;
-
+    
+    @Autowired
+    private CuentaDao cuentaService;
 
     /**
      *
@@ -78,17 +82,24 @@ public class PedidoController {
     @PostMapping()
     public ResponseEntity<?> guardarPedido(@RequestBody Pedido pedido) {
         CustomResponse customResponse = new CustomResponse();
-
         PedidoEntity pedidoAux = new PedidoEntity();
         Optional<MesaEntity> mesaAux
                 = mesaService.getMesa(pedido.getIdMesa());
+        Optional<CuentaEntity> cuentaAux
+                = cuentaService.findById(pedido.getIdCuenta());
 
         if (!mesaAux.isPresent()) {
             throw new BlogAppException(HttpStatus.BAD_REQUEST,
                     "Sin registro de esa mesa");
         }
+        
+        if (!cuentaAux.isPresent()) {
+            throw new BlogAppException(HttpStatus.BAD_REQUEST,
+                    "Sin registro de esa cuenta");
+        }
 
         pedidoAux.setMesa(mesaAux.get());
+        pedidoAux.setIdCuenta(cuentaAux.get());
         pedidoService.savePedido(pedidoAux);
         customResponse.setData("Pedido guardado exitosamente");
         return new ResponseEntity<>(customResponse, HttpStatus.OK);
@@ -96,9 +107,8 @@ public class PedidoController {
     }
 
     /**
-     * Actualiza el pedido
-     * Ya que solo pedido se registra con el idMesa, 
-     * cuando se actualiza solo es para cambiar la mesa asignada 
+     * Actualiza el pedido Ya que solo pedido se registra con el idMesa, cuando
+     * se actualiza solo es para cambiar la mesa asignada
      *
      * @param id
      * @param pedido
@@ -108,36 +118,34 @@ public class PedidoController {
     public ResponseEntity<?> updatePedido(@PathVariable Long id, @RequestBody Pedido pedido) {
         CustomResponse customResponse = new CustomResponse();
         Optional<PedidoEntity> pedidoAux = pedidoService.getPedidoById(id);
-        Optional <MesaEntity> mesaAux = mesaService.getMesa(pedido.getIdMesa());
-       
-        if(!mesaAux.isPresent()){
+        Optional<MesaEntity> mesaAux = mesaService.getMesa(pedido.getIdMesa());
+
+        if (!mesaAux.isPresent()) {
             throw new BlogAppException(HttpStatus.BAD_REQUEST,
                     "Sin registro de esa mesa");
-         }
-       
+        }
+
         pedidoService.updatePedido(pedidoAux.get(), id, mesaAux.get());
-        
+
         customResponse.setMensage("Mesa actualizada exitosamente");
         return new ResponseEntity<>(customResponse, HttpStatus.OK);
 
     }
 
-    
     /**
-     * Elimina el pedido
-     * Ya que existen relaciones con otras tablas
-     * tambien elimina su registro en ellas
+     * Elimina el pedido Ya que existen relaciones con otras tablas tambien
+     * elimina su registro en ellas
      *
      * @param id
      * @return
      */
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deletePedido(@PathVariable Long id){
+    public ResponseEntity<?> deletePedido(@PathVariable Long id) {
         CustomResponse customResponse = new CustomResponse();
         pedidoService.deletePedido(id);
 
         customResponse.setData("Pedido eliminado exitosamente");
-        return new ResponseEntity<>(customResponse, HttpStatus.OK);  
+        return new ResponseEntity<>(customResponse, HttpStatus.OK);
     }
 
 }

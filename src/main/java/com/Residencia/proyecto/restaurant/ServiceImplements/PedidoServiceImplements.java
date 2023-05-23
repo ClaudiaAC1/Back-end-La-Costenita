@@ -43,7 +43,11 @@ public class PedidoServiceImplements implements PedidoService {
     @Override
     public void deletePedido(Long id) {
         Optional<PedidoEntity> p = pedidoDao.findById(id);
-        pedidoDao.delete(p.get());
+        if(p.isPresent()) {
+            pedidoDao.delete(p.get());
+        }
+        
+        System.out.println("NO ENCONTROOO");
 
     }
 

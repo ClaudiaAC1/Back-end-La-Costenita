@@ -1,5 +1,6 @@
 package com.Residencia.proyecto.restaurant.Entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
@@ -55,13 +56,16 @@ public class EmpleadoEntity implements Serializable{
 
     @Column
     private Double sueldo;
+    
+    @Column
+    private Double porcentaje;
 
     //CODIGO DE ACCESO
     @Column
     @Length(max = 8, min = 4)
     private String codigoAcceso;
 
-    @JsonIgnore
+    @JsonIgnore    
     @OneToMany(mappedBy = "empleado", cascade = CascadeType.ALL)
     private Set<MesaEntity> mesas = new HashSet<>();
 
@@ -77,12 +81,13 @@ public class EmpleadoEntity implements Serializable{
     @Transient
     private String rolName;
 
-    public EmpleadoEntity(String nombre, String apellidos, String telefono, Byte status, Double sueldo, String codigoAcceso, Set<MesaEntity> mesas, RolEntity rol) {
+    public EmpleadoEntity(String nombre, String apellidos, String telefono, Byte status, Double sueldo,Double porcentaje, String codigoAcceso, Set<MesaEntity> mesas, RolEntity rol) {
         this.nombre = nombre;
         this.apellidos = apellidos;
         this.telefono = telefono;
         this.status = status;
         this.sueldo = sueldo;
+        this.porcentaje =  porcentaje;
         this.codigoAcceso = codigoAcceso;
         this.mesas = mesas;
         this.rol = rol;
@@ -140,6 +145,14 @@ public class EmpleadoEntity implements Serializable{
         this.sueldo = sueldo;
     }
 
+    public Double getPorcentaje() {
+        return porcentaje;
+    }
+
+    public void setPorcentaje(Double porcentaje) {
+        this.porcentaje = porcentaje;
+    }
+
     public String getCodigoAcceso() {
         return codigoAcceso;
     }
@@ -148,6 +161,7 @@ public class EmpleadoEntity implements Serializable{
         this.codigoAcceso = codigoAcceso;
     }
 
+    @JsonBackReference 
     public Set<MesaEntity> getMesas() {
         return mesas;
     }

@@ -15,7 +15,13 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Pedido {
-    private Long idMesa; 
-    private Long idCuenta;
+public class Cuenta {
+    private Long idproducto;
+    private String nombre;
+    private Integer cantidad;
+    private Double precio;
+    
+    public double getTotal(){
+        return cantidad * precio;
+    }
 }

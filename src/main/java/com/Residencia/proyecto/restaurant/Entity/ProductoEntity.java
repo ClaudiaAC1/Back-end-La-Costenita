@@ -19,9 +19,11 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @Entity 
+@NoArgsConstructor
 @Table(name="producto")
 public class ProductoEntity implements Serializable{
     
@@ -40,14 +42,6 @@ public class ProductoEntity implements Serializable{
     private Integer contador; //anilozar bien este atributo
     private String url_img; //guarda la url de la imagen guardada en el backend
 
-    //relacion con categoria
-    //*p--------1c    1c--------*P
-    //n a 1
-
-
-    /***
-     * fetch = FetchType.LAZY  lazy= solo trae lps datos cuanod se le pidan
-     */
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "categoria_id") //joinColumn indica quien sera la clase propietaria
     @JsonProperty(access = Access.WRITE_ONLY)  //para que en api rest ignore la propiedad y pueda serializarla  
@@ -59,12 +53,7 @@ public class ProductoEntity implements Serializable{
     @JsonIgnore    
     @OneToMany(mappedBy = "idProducto", cascade= CascadeType.ALL)
     private Set<Pedido_ProductoEntity> producto_pedido =  new HashSet<>();
-            
-     
-    public ProductoEntity(){
-
-    }
-
+      
     public ProductoEntity(String nombre, String tamanio, Double precio, Byte status, Integer contador, String url_img, CategoriaEntity categoria) {
         this.nombre = nombre;
         this.tamanio = tamanio;

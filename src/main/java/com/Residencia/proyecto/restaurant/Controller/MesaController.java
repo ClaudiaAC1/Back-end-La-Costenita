@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.Residencia.proyecto.restaurant.Entity.MesaEntity;
 import com.Residencia.proyecto.restaurant.Exception.BlogAppException;
+import com.Residencia.proyecto.restaurant.Repository.MesaDao;
 import com.Residencia.proyecto.restaurant.Services.EmpleadoService;
 import com.Residencia.proyecto.restaurant.Services.MesaService;
 import com.Residencia.proyecto.restaurant.Utils.CustomResponse;
@@ -30,7 +31,7 @@ public class MesaController {
 
     @Autowired
     private MesaService mesaService;
-
+    
     @Autowired
     private EmpleadoService empleadoService;
 
@@ -41,7 +42,6 @@ public class MesaController {
     @GetMapping("")
     @PreAuthorize("hasAnyAuthority('admin','cajero')")
     public CustomResponse getMesas() {
-
         CustomResponse customResponse = new CustomResponse();
         customResponse.setData(mesaService.getMesas());
         return customResponse;
@@ -108,7 +108,8 @@ public class MesaController {
         }
 
         mesa.setEmpleado(empleadoOptional.get());
-        mesaService.saveMesa(mesa);
+        mesaService.saveMesa(mesa);        
+        customResponse.setData("mesa registrada correctamente");
         return new ResponseEntity<>(customResponse, HttpStatus.CREATED);
 
     }
@@ -142,8 +143,8 @@ public class MesaController {
     @PreAuthorize("hasAuthority('admin')")
     public ResponseEntity<?> deleteTable(@PathVariable Long id) {
         CustomResponse customResponse = new CustomResponse();
-        mesaService.deleteMesa(id);
-
+        mesaService.deleteMesa(id);        
+        customResponse.setData("mesa elimnada correctamente");
         return new ResponseEntity<>(customResponse, HttpStatus.OK);
 
     }
