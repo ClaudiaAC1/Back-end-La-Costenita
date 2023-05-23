@@ -1,8 +1,15 @@
 package com.Residencia.proyecto.restaurant.Entity;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -48,11 +55,12 @@ public class MesaEntity implements Serializable{
     @NotBlank (message = "La capacidad no puede estar vacia")
     private String capacidad; //atributo que registrara cuantas personas estan siendo atendidas
 
+    
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "empleado_id") //joinColumn indica quien sera la clase propietaria
     @JsonProperty(access = Access.WRITE_ONLY)  //para que en api rest ignore la propiedad y pueda serializarla  
     private EmpleadoEntity empleado;
-    
+  
 //    @JsonIgnore
     @OneToMany(mappedBy = "idMesa", cascade = CascadeType.ALL)
     private Set<PedidoEntity> pedidos = new HashSet<>();
@@ -89,6 +97,7 @@ public class MesaEntity implements Serializable{
         this.capacidad = capacidad;
     }
 
+    @JsonManagedReference 
     public EmpleadoEntity getEmpleado() {
         return empleado;
     }
@@ -98,6 +107,7 @@ public class MesaEntity implements Serializable{
     }
 
     @JsonManagedReference
+//    @JsonBackReference
     public Set<PedidoEntity> getPedidos() {
         return pedidos;
     }

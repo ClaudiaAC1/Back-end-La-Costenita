@@ -52,7 +52,7 @@ public class SecurityConfig {
                 .csrf()
                 .disable()
                 .authorizeHttpRequests()
-                .requestMatchers("/login/**", "/user", "/order/**")
+                .requestMatchers("/login/**", "/user", "/order/**", "/cuenta/**")
                     .permitAll() //aqui las rutas a las que todos podran acceder
                 .anyRequest()
                 

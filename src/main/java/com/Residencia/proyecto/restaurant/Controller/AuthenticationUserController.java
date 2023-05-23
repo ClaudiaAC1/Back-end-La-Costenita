@@ -43,7 +43,7 @@ public class AuthenticationUserController {
     private JwtService jwtService;
 
     @PostMapping("/auth")
-    public ResponseEntity<CustomResponse> authenticateAndGetToken(@RequestBody AuthenticationRequest authRequest) {
+    public ResponseEntity<?> authenticateAndGetToken(@RequestBody AuthenticationRequest authRequest) {
         CustomResponse customResponse = new CustomResponse();
         Optional<UserEntity> aux = userService.getUserByName(authRequest.getUsername());
 

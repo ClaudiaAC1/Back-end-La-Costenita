@@ -32,7 +32,6 @@ public class CategoriaEntity implements Serializable{
     @NotBlank (message = "el nombre no puede estar vacio")
     private String nombre;
 
-    @JsonIgnore
     @OneToMany(mappedBy = "categoria", cascade= CascadeType.ALL)
     private Set<ProductoEntity> productos =  new HashSet<>();
 
