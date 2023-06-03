@@ -40,7 +40,7 @@ public class MesaController {
      * @return lista de mesas
      */
     @GetMapping("")
-    @PreAuthorize("hasAnyAuthority('admin','cajero')")
+    @PreAuthorize("hasAnyAuthority('admin','cajero','user')")
     public CustomResponse getMesas() {
         CustomResponse customResponse = new CustomResponse();
         customResponse.setData(mesaService.getMesas());
@@ -53,7 +53,7 @@ public class MesaController {
      * @return objeto mesa con sus datos
      */
     @GetMapping("search-name/{nombre}")
-    @PreAuthorize("hasAnyAuthority('admin','cajero')")
+    @PreAuthorize("hasAnyAuthority('admin','cajero', 'user')")
     public ResponseEntity<?> getMesaNombre(@PathVariable String nombre) {
         CustomResponse customResponse = new CustomResponse();
         Optional<MesaEntity> m = mesaService.getMesa(nombre);
@@ -72,7 +72,7 @@ public class MesaController {
      * @return objeto mesa con coincidencia en id
      */
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyAuthority('admin','cajero')")
+    @PreAuthorize("hasAnyAuthority('admin','cajero', 'user')")
     public ResponseEntity<?> getMesaId(@PathVariable Long id) {
         CustomResponse customResponse = new CustomResponse();
         Optional<MesaEntity> m = mesaService.getMesa(id);
@@ -91,7 +91,7 @@ public class MesaController {
      * @return
      */
     @PostMapping("/")
-    @PreAuthorize("hasAnyAuthority('admin','cajero')")
+    @PreAuthorize("hasAnyAuthority('admin','cajero', 'user')")
     public ResponseEntity<?> saveTable(@RequestBody @Valid MesaEntity mesa) {
         CustomResponse customResponse = new CustomResponse();
 
@@ -121,7 +121,7 @@ public class MesaController {
      * @return leyenda con creado o no correctamente
      */
     @PutMapping("/{id}")
-    @PreAuthorize("hasAnyAuthority('admin','cajero')")
+    @PreAuthorize("hasAnyAuthority('admin','cajero', 'user')")
     public ResponseEntity<?> updateMesa(@RequestBody @Valid MesaEntity mesa, @PathVariable Long id) {
         CustomResponse customResponse = new CustomResponse();
 

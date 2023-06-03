@@ -5,31 +5,104 @@
 package com.Residencia.proyecto.restaurant.Entity;
 
 import com.Residencia.proyecto.restaurant.Utils.FechaYhora;
-import java.util.List;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import java.util.HashSet;
+import java.util.Set;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 
 /**
  *
  * @author claua
  */
-@Data
+@Entity
+@Table(name = "venta")
+//@Data
 @AllArgsConstructor
 public class VentaEntity {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+
     private String fecha;
-    private List<ItemProduct> productos;
+
+    @OneToMany(mappedBy = "venta", cascade = CascadeType.ALL)
+    private Set<ItemProductEntity> productos = new HashSet<>();
+
+    private Double total;
     
-    public VentaEntity(){
-        this.fecha = FechaYhora.obtenerFechaYHoraActual();
+    private String nombreMesero;
+    
+    private String nombreMesa;
+
+    public VentaEntity() {
+        this.fecha = FechaYhora.obtenerFecha();
+        this.total = 0.0;
     }
     
+    public VentaEntity(String nombreMesero, String nombreMesa) {
+        this.fecha = FechaYhora.obtenerFecha();
+        this.total = 0.0;
+        this.nombreMesa =  nombreMesa;
+        this.nombreMesero=  nombreMesero;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    } 
+
+    public String getFecha() {
+        return fecha;
+    }
+
+    public void setFecha(String fecha) {
+        this.fecha = fecha;
+    }
+
+    public Set<ItemProductEntity> getProductos() {
+        return productos;
+    }
+
+    public void setProductos(Set<ItemProductEntity> productos) {
+        this.productos = productos;
+    }
+
     public Double getTotal() {
-        Double total = 0.0;
-        for (ItemProduct producto : productos) {
+        for (ItemProductEntity producto : productos) {
             total += producto.getTotal();
         }
         return total;
+    }
+
+    public void setTotal() {
+        for (ItemProductEntity producto : productos) {
+            total += producto.getTotal();
+        }
+    }
+
+    public String getNombreMesero() {
+        return nombreMesero;
+    }
+
+    public void setNombreMesero(String nombreMesero) {
+        this.nombreMesero = nombreMesero;
+    }
+
+    public String getNombreMesa() {
+        return nombreMesa;
+    }
+
+    public void setNombreMesa(String nombreMesa) {
+        this.nombreMesa = nombreMesa;
     }
 }

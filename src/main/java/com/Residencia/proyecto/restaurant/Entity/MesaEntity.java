@@ -21,6 +21,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.NotBlank;
 import java.io.Serializable;
@@ -54,21 +55,36 @@ public class MesaEntity implements Serializable{
     @Column
     @NotBlank (message = "La capacidad no puede estar vacia")
     private String capacidad; //atributo que registrara cuantas personas estan siendo atendidas
-
     
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "empleado_id") //joinColumn indica quien sera la clase propietaria
     @JsonProperty(access = Access.WRITE_ONLY)  //para que en api rest ignore la propiedad y pueda serializarla  
     private EmpleadoEntity empleado;
   
+    @Transient
+    private Long idEmpleado;
+    
 //    @JsonIgnore
     @OneToMany(mappedBy = "idMesa", cascade = CascadeType.ALL)
     private Set<PedidoEntity> pedidos = new HashSet<>();
 
+    public MesaEntity(String nombre, Byte status, String capacidad, EmpleadoEntity empleado) {
+        this.nombre = nombre;
+        this.status = status;
+        this.capacidad = capacidad;
+        this.empleado = empleado;
+        this.idEmpleado = empleado.getId();
+    }
+
+    
+    
     public Long getId() {
         return id;
     }
-
+    
+    public Long getIdEmpleado() {
+        return empleado.getId();
+    }
     public void setId(Long id) {
         this.id = id;
     }

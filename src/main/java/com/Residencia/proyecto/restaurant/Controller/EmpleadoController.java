@@ -41,11 +41,9 @@ public class EmpleadoController {
     @PreAuthorize("hasAnyAuthority('admin','cajero')")
 
     public CustomResponse getEmployees() {
-
         CustomResponse customResponse = new CustomResponse();
         customResponse.setData(empleadoService.getEmpleados());
         return customResponse;
-
     }
 
     /**

@@ -9,6 +9,7 @@ import com.Residencia.proyecto.restaurant.Entity.CuentaEntity;
 import com.Residencia.proyecto.restaurant.Entity.PedidoEntity;
 import com.Residencia.proyecto.restaurant.Entity.Pedido_ProductoEntity;
 import com.Residencia.proyecto.restaurant.Exception.BlogAppException;
+import com.Residencia.proyecto.restaurant.Repository.ItemProductDao;
 import com.Residencia.proyecto.restaurant.Services.CuentaService;
 import com.Residencia.proyecto.restaurant.Services.PedidoService;
 import com.Residencia.proyecto.restaurant.Utils.CustomResponse;
@@ -20,6 +21,7 @@ import java.util.Optional;
 import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -41,6 +43,9 @@ public class CuentaController {
 
     @Autowired
     private PedidoService pedidoService;
+    
+    @Autowired
+    private ItemProductDao itemProductService;
 
     /**
      * Se optimen la cuenta contien el Id de la cuenta y el total generado con
@@ -58,14 +63,20 @@ public class CuentaController {
     /**
      * Guarda un cuenta el la base de datos para poder asignarle los pedidos
      *
-     * @param cuenta
      * @return
      */
     @PostMapping
-    public CustomResponse save(@RequestBody CuentaEntity cuenta) {
+    public ResponseEntity<?> save() {
         CustomResponse customResponse = new CustomResponse();
+        CuentaEntity cuenta = new CuentaEntity();
+        
         cuentaService.saveCuenta(cuenta);
-        return customResponse;
+        
+        customResponse.setData(cuenta.getId());
+        customResponse.setHttpCode(HttpStatus.CREATED.value());
+        customResponse.setMensage(HttpStatus.CREATED.name());
+        return new ResponseEntity<>(customResponse, HttpStatus.CREATED);
+
     }
 
     /**
@@ -98,7 +109,8 @@ public class CuentaController {
             });
         });
 
-        customResponse.setData(prod);
+        customResponse.setData(prod );
+        
         return customResponse;
     }
 
@@ -142,7 +154,8 @@ public class CuentaController {
                 }
             }
         }
-        customResponse.setData(prod);
+        customResponse.setData(prod  );
+        customResponse.setMensage(c.get().getIdMesa() +"");
         return customResponse;
     }
 
@@ -189,5 +202,7 @@ public class CuentaController {
 
         return customResponse;
     }
+    
+    
 
 }

@@ -52,10 +52,9 @@ public class SecurityConfig {
                 .csrf()
                 .disable()
                 .authorizeHttpRequests()
-                .requestMatchers("/login/**", "/user", "/order/**", "/cuenta/**")
+                .requestMatchers("/login/**", "/user", "/main/**")
                     .permitAll() //aqui las rutas a las que todos podran acceder
                 .anyRequest()
-                
                     .authenticated()
                 .and()
                     .sessionManagement()
@@ -69,21 +68,6 @@ public class SecurityConfig {
         .logoutSuccessHandler((request, response, authentication) -> SecurityContextHolder.clearContext())
         .and()
             .build();
-//                .authorizeHttpRequests().requestMatchers("/user/**", "/table/**", "/rol/**", 
-//                                                        "/category/**", "/product/**") //aqui van las rutas que permitiran autenticacion 
-//                .authenticated().and()
-//                .sessionManagement()
-//                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-//                .and()
-//                .authenticationProvider(authenticationProvider())
-//                .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class)
-//                .logout()
-//                .logoutUrl("/logout") //no funciona jejeje
-//                .addLogoutHandler(logoutHandler)
-//                .logoutSuccessHandler((request, response, authentication) -> SecurityContextHolder.clearContext())
-//                .and()
-//                .build(); 
-
     }
     
 

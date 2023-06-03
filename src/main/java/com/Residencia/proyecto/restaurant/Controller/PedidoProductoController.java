@@ -14,6 +14,8 @@ import com.Residencia.proyecto.restaurant.Services.PedidoProductoService;
 import com.Residencia.proyecto.restaurant.Services.ProductoService;
 import com.Residencia.proyecto.restaurant.Services.PedidoService;
 import com.Residencia.proyecto.restaurant.Utils.CustomResponse;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -141,5 +143,32 @@ public class PedidoProductoController {
         ppService.updatePedidoP(ppAux.get(), id);
         customResponse.setData("Producto actualizado del pedido exitosamente");
         return new ResponseEntity<>(customResponse, HttpStatus.OK);        
+    }
+    
+    
+    ///se mete el id del pedido y debe arrojar todos los productos que poertenecen a ese pedido
+    @GetMapping("/pedido/{id}")
+    public ResponseEntity<?> getProducto(@PathVariable Long id) {
+        CustomResponse customResponse = new CustomResponse();
+        Optional<PedidoEntity> pedidoAux =  pedidoService.getPedidoById(id);
+        
+        if (!pedidoAux.isPresent()) {
+            throw new BlogAppException(HttpStatus.BAD_REQUEST, "Sin registro de ese pedido");
+        }
+        
+        List<Pedido_ProductoEntity> pedido_ProductoEntity = ppService.getPedidos();
+        List<Pedido_ProductoEntity> contenedor =  new ArrayList<>();
+        
+        for (Pedido_ProductoEntity ppAux : pedido_ProductoEntity) {
+            if(ppAux.getId_Pedido() == pedidoAux.get().getId()){
+                contenedor.add(ppAux);
+            }
+                
+        }
+        
+        
+        customResponse.setData(contenedor);
+        return new ResponseEntity<>(customResponse, HttpStatus.OK);
+        
     }
 }

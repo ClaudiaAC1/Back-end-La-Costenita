@@ -18,4 +18,15 @@ public class FechaYhora {
         LocalDateTime ahora = LocalDateTime.now();
         return formateador.format(ahora);
     }
+    
+    public static String obtenerFecha() {
+        String formato = "yyyy-MM-dd";
+        DateTimeFormatter formateador = DateTimeFormatter.ofPattern(formato);
+        LocalDateTime ahora = LocalDateTime.now();
+        return formateador.format(ahora);
+    }
+    
+//    public static void main(String args[]){
+//        System.out.println("Fecha = " + obtenerFecha());
+//    }
 }

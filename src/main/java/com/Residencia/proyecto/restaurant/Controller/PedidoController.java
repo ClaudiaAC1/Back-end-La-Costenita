@@ -101,7 +101,7 @@ public class PedidoController {
         pedidoAux.setMesa(mesaAux.get());
         pedidoAux.setIdCuenta(cuentaAux.get());
         pedidoService.savePedido(pedidoAux);
-        customResponse.setData("Pedido guardado exitosamente");
+        customResponse.setData(pedidoAux.getId()+"");
         return new ResponseEntity<>(customResponse, HttpStatus.OK);
 
     }

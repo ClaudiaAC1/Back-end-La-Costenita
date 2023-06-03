@@ -6,6 +6,7 @@ package com.Residencia.proyecto.restaurant.Entity;
 
 import com.Residencia.proyecto.restaurant.Utils.FechaYhora;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -46,7 +47,7 @@ public class PedidoEntity implements Serializable {
     @Transient
     private Long id_mesa;
     
-//    @JsonIgnore
+    @JsonIgnore
     @OneToMany(mappedBy = "idPedido", cascade = CascadeType.ALL)
     private Set<Pedido_ProductoEntity> pedido_producto = new HashSet<>();
   

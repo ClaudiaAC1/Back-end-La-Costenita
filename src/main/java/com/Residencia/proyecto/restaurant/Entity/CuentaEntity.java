@@ -12,6 +12,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
@@ -35,6 +36,9 @@ public class CuentaEntity implements Serializable {
     @JsonIgnore
     @OneToMany(mappedBy = "idCuenta", cascade = CascadeType.ALL)
     private Set<PedidoEntity> pedidos = new HashSet<>();
+    
+    @Transient
+    private Long idMesa;
 
     public Long getId() {
         return id;
@@ -62,5 +66,16 @@ public class CuentaEntity implements Serializable {
         }
         return total;
     }
+
+    public Long getIdMesa() {
+        long id = 0;
+        for (PedidoEntity pedido : pedidos) {
+           id =  pedido.getId_Mesa();
+        }
+        return this.idMesa = id;
+    }
+
+    
+    
 
 }
