@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.Residencia.proyecto.restaurant.Entity.MesaEntity;
 import com.Residencia.proyecto.restaurant.Exception.BlogAppException;
-import com.Residencia.proyecto.restaurant.Repository.MesaDao;
 import com.Residencia.proyecto.restaurant.Services.EmpleadoService;
 import com.Residencia.proyecto.restaurant.Services.MesaService;
 import com.Residencia.proyecto.restaurant.Utils.CustomResponse;
@@ -40,7 +39,6 @@ public class MesaController {
      * @return lista de mesas
      */
     @GetMapping("")
-    @PreAuthorize("hasAnyAuthority('admin','cajero','user')")
     public CustomResponse getMesas() {
         CustomResponse customResponse = new CustomResponse();
         customResponse.setData(mesaService.getMesas());
@@ -53,7 +51,6 @@ public class MesaController {
      * @return objeto mesa con sus datos
      */
     @GetMapping("search-name/{nombre}")
-    @PreAuthorize("hasAnyAuthority('admin','cajero', 'user')")
     public ResponseEntity<?> getMesaNombre(@PathVariable String nombre) {
         CustomResponse customResponse = new CustomResponse();
         Optional<MesaEntity> m = mesaService.getMesa(nombre);
@@ -72,7 +69,6 @@ public class MesaController {
      * @return objeto mesa con coincidencia en id
      */
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyAuthority('admin','cajero', 'user')")
     public ResponseEntity<?> getMesaId(@PathVariable Long id) {
         CustomResponse customResponse = new CustomResponse();
         Optional<MesaEntity> m = mesaService.getMesa(id);
@@ -91,7 +87,6 @@ public class MesaController {
      * @return
      */
     @PostMapping("/")
-    @PreAuthorize("hasAnyAuthority('admin','cajero', 'user')")
     public ResponseEntity<?> saveTable(@RequestBody @Valid MesaEntity mesa) {
         CustomResponse customResponse = new CustomResponse();
 
@@ -121,7 +116,6 @@ public class MesaController {
      * @return leyenda con creado o no correctamente
      */
     @PutMapping("/{id}")
-    @PreAuthorize("hasAnyAuthority('admin','cajero', 'user')")
     public ResponseEntity<?> updateMesa(@RequestBody @Valid MesaEntity mesa, @PathVariable Long id) {
         CustomResponse customResponse = new CustomResponse();
 
@@ -140,7 +134,6 @@ public class MesaController {
      * @return
      */
     @DeleteMapping("{id}")
-    @PreAuthorize("hasAuthority('admin')")
     public ResponseEntity<?> deleteTable(@PathVariable Long id) {
         CustomResponse customResponse = new CustomResponse();
         mesaService.deleteMesa(id);        

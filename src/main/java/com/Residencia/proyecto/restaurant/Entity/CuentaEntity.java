@@ -40,6 +40,13 @@ public class CuentaEntity implements Serializable {
     @Transient
     private Long idMesa;
 
+    public CuentaEntity() {        
+        this.total = 0.0;
+        this.idMesa = getIdMesa();
+    }
+
+    
+    
     public Long getId() {
         return id;
     }
@@ -65,6 +72,16 @@ public class CuentaEntity implements Serializable {
             });
         }
         return total;
+    }
+    
+    public void setTotal() {
+        for (PedidoEntity pedido : pedidos) {
+
+            pedido.getPedido_producto().forEach((pp) -> {
+                this.total += pp.getCantidad() * pp.getIdProducto().getPrecio();
+            });
+        }
+       
     }
 
     public Long getIdMesa() {

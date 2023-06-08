@@ -39,7 +39,9 @@ public class ProductoEntity implements Serializable{
     private Double precio;
     private Byte status; //1:activo, 2:inactivo
 
-    private Integer contador; //anilozar bien este atributo
+    private Integer contador; //Contador para cuantos vendidos
+    private Integer cancelados; //Contador para cuantos cancelados
+    
     private String url_img; //guarda la url de la imagen guardada en el backend
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

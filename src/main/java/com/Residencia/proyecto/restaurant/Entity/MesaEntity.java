@@ -64,6 +64,9 @@ public class MesaEntity implements Serializable{
     @Transient
     private Long idEmpleado;
     
+    @Transient
+    private Long idCuenta;
+    
 //    @JsonIgnore
     @OneToMany(mappedBy = "idMesa", cascade = CascadeType.ALL)
     private Set<PedidoEntity> pedidos = new HashSet<>();
@@ -74,6 +77,25 @@ public class MesaEntity implements Serializable{
         this.capacidad = capacidad;
         this.empleado = empleado;
         this.idEmpleado = empleado.getId();
+        this.idCuenta = getIdCuenta();
+    }
+    
+    public Long p(){
+        Long idCuenta=0L;
+        for (PedidoEntity pedido : pedidos) {
+            System.out.println(pedido.getIdCuenta());
+            idCuenta = pedido.getIdCuenta().getId();
+        }
+        return idCuenta;
+    }
+    
+    public Long getIdCuenta(){
+        Long idCuenta=0L;
+        for (PedidoEntity pedido : pedidos) {
+            System.out.println(pedido.getIdCuenta());
+            idCuenta = pedido.getIdCuenta().getId();
+        }
+        return idCuenta;
     }
 
     

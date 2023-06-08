@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.Residencia.proyecto.restaurant.Entity.CategoriaEntity;
+import com.Residencia.proyecto.restaurant.Entity.Dto.ContadoresProduct;
 import com.Residencia.proyecto.restaurant.Entity.ProductoEntity;
 import com.Residencia.proyecto.restaurant.Utils.CustomResponse;
 
@@ -40,7 +41,7 @@ public class ProductoController {
      * @return lista de Productos
      */
     @GetMapping("")
-    @PreAuthorize("hasAnyAuthority('admin','cajero')")
+//    @PreAuthorize("hasAnyAuthority('admin','cajero')")
     public CustomResponse listarProductos() {
         CustomResponse customResponse = new CustomResponse();
         customResponse.setData(productoService.getProductos());
@@ -54,7 +55,6 @@ public class ProductoController {
      * @return objeto producto con sus datos
      */
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyAuthority('admin','cajero')")
     public ResponseEntity<?> obtenerProductoId(@PathVariable Long id) {
         CustomResponse customResponse = new CustomResponse();
         Optional<ProductoEntity> p = productoService.getProductoById(id);
@@ -73,7 +73,6 @@ public class ProductoController {
      * @return
      */
     @PostMapping("")
-    @PreAuthorize("hasAuthority('admin')")
     public ResponseEntity<?> guardarProducto(@RequestBody @Valid ProductoEntity producto) {
         CustomResponse customResponse = new CustomResponse();
 
@@ -101,7 +100,6 @@ public class ProductoController {
      * @return leyenda con creado o no correctamente
      */
     @PutMapping("/{id}")
-    @PreAuthorize("hasAuthority('admin')")
     public ResponseEntity<?> actualizarProducto(@RequestBody @Valid ProductoEntity producto, @PathVariable Long id) {
 
         CustomResponse customResponse = new CustomResponse();
@@ -120,7 +118,6 @@ public class ProductoController {
      * @return
      */
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAuthority('admin')")
     public ResponseEntity<?> eliminarProducto(@PathVariable Long id) {
         CustomResponse customResponse = new CustomResponse();
         Optional<ProductoEntity> productoOptional = productoService.getProductoById(id);
@@ -131,6 +128,32 @@ public class ProductoController {
         productoService.deleteProducto(productoOptional.get());
         customResponse.setData("Producto eliminado correctamente");
         return new ResponseEntity<>(customResponse, HttpStatus.OK);
+    }
+    
+    @PutMapping("/add/{id}")
+    public ResponseEntity<?> actualizarContador(@RequestBody ContadoresProduct producto, @PathVariable Long id) {
+
+        CustomResponse customResponse = new CustomResponse();
+        Optional<ProductoEntity> produtAux = productoService.getProductoById(id);
+        produtAux.get().setContador(producto.getContador());
+        productoService.updateProducto(produtAux.get(), id);
+        customResponse.setData("Producto actualizado correctamente");
+
+        return new ResponseEntity<>(customResponse, HttpStatus.OK);
+
+    }
+    
+    @PutMapping("/cancel/{id}")
+    public ResponseEntity<?> actualizarCancelados(@RequestBody ContadoresProduct producto, @PathVariable Long id) {
+
+        CustomResponse customResponse = new CustomResponse();
+        Optional<ProductoEntity> produtAux = productoService.getProductoById(id);
+        produtAux.get().setCancelados(producto.getContador());
+        productoService.updateProducto(produtAux.get(), id);
+        customResponse.setData("Producto actualizado correctamente");
+
+        return new ResponseEntity<>(customResponse, HttpStatus.OK);
+
     }
 
 }

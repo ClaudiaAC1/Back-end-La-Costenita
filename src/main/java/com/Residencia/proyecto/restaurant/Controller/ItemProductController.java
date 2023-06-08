@@ -56,8 +56,6 @@ public class ItemProductController {
         itemPAux.setNombre(itemP.getNombre());
         itemPAux.setPrecio(itemP.getPrecio());
         itemPAux.setCantidad(itemP.getCantidad());
-//        itemPAux.setNombreMesa(itemP.getNombreMesa());
-//        itemPAux.setNombreMesero(itemP.getNombreMesero());
         itemPAux.setVenta(ventaAux.get());
         
         itemProductService.save(itemPAux);

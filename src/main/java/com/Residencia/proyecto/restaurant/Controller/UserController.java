@@ -29,7 +29,6 @@ public class UserController {
     private UserService userService;
 
     @GetMapping()
-    @PreAuthorize("hasAuthority('admin')")
     public CustomResponse getUsers() {
         CustomResponse customResponse = new CustomResponse();
         customResponse.setData(userService.getUsers());
@@ -37,7 +36,6 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAuthority('admin')")
     public ResponseEntity<?> getUserById(@PathVariable Long id) {
         CustomResponse customResponse = new CustomResponse();
         Optional<UserEntity> u = userService.getUserById(id);
@@ -60,7 +58,6 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasAuthority('admin')")
     public ResponseEntity<?> updateUser(@RequestBody @Valid UserEntity user, @PathVariable Long id) {
         CustomResponse customResponse = new CustomResponse();
         userService.updateUser(user, id);
@@ -69,7 +66,6 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAuthority('admin')")
     public CustomResponse deleteUser(@PathVariable Long id) {
         CustomResponse customResponse = new CustomResponse();
         userService.deleteUser(id);

@@ -38,8 +38,6 @@ public class EmpleadoController {
      * @return
      */
     @GetMapping("")
-    @PreAuthorize("hasAnyAuthority('admin','cajero')")
-
     public CustomResponse getEmployees() {
         CustomResponse customResponse = new CustomResponse();
         customResponse.setData(empleadoService.getEmpleados());
@@ -54,7 +52,6 @@ public class EmpleadoController {
      * @return
      */
     @GetMapping("/search-name/{nombre}")
-    @PreAuthorize("hasAnyAuthority('admin','cajero')")
     public ResponseEntity<?> getEmployeeNombre(@PathVariable String nombre) {
         CustomResponse customResponse = new CustomResponse();
         Optional<EmpleadoEntity> e = empleadoService.getEmpleadoByNombre(nombre);
@@ -75,7 +72,6 @@ public class EmpleadoController {
      * @return
      */
     @GetMapping("/search-id/{id}")
-    @PreAuthorize("hasAnyAuthority('admin','cajero')")
     public ResponseEntity<?> getEmployeeId(@PathVariable Long id) {
         CustomResponse customResponse = new CustomResponse();
         Optional<EmpleadoEntity> e = empleadoService.getEmpleadoById(id);
@@ -96,7 +92,6 @@ public class EmpleadoController {
      * @return
      */
     @GetMapping("/search-tel/{telefono}")
-    @PreAuthorize("hasAnyAuthority('admin','cajero')")
     public ResponseEntity<?> getEmployeeTel(@PathVariable String telefono) {
         CustomResponse customResponse = new CustomResponse();
         Optional<EmpleadoEntity> e = empleadoService.getEmpleadoByTelefono(telefono);
@@ -116,7 +111,6 @@ public class EmpleadoController {
      * @return
      */
     @PostMapping("/")
-    @PreAuthorize("hasAuthority('admin')")
     public ResponseEntity<?> saveEmployee(@RequestBody @Valid EmpleadoEntity empleado) {
         CustomResponse customResponse = new CustomResponse();
 
@@ -136,7 +130,6 @@ public class EmpleadoController {
      * @return
      */
     @PutMapping("/{id}")
-    @PreAuthorize("hasAuthority('admin')")
     public ResponseEntity<?> updateEmployee(@RequestBody @Valid EmpleadoEntity empleado, @PathVariable Long id) {
         CustomResponse customResponse = new CustomResponse();
 
@@ -159,7 +152,6 @@ public class EmpleadoController {
      *
      */
     @PostMapping("/valid/{id}")
-
     public CustomResponse validCodeAcc(@PathVariable Long id, @RequestBody CodigoAcceso codigoAcceso) {
         CustomResponse customResponse = new CustomResponse();
 
@@ -175,7 +167,6 @@ public class EmpleadoController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAuthority('admin')")
     public CustomResponse deleteEmployee(@PathVariable Long id) {
         CustomResponse customResponse = new CustomResponse();
         empleadoService.deleteEmpleado(id);

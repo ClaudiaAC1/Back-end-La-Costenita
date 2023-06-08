@@ -36,7 +36,6 @@ public class CategoriaController {
      * @return
      */
     @GetMapping("")
-    @PreAuthorize("hasAnyAuthority('admin','cajero')")
     public CustomResponse listarCategorias() {
         CustomResponse customResponse = new CustomResponse();
         customResponse.setData(categoriaService.getCategorias());
@@ -50,7 +49,6 @@ public class CategoriaController {
      * @return
      */
     @GetMapping("/{id}")
-    @PreAuthorize("hasAuthority('admin')")
     public CustomResponse obtenerCategoriaId(@PathVariable Long id) {
         CustomResponse customResponse = new CustomResponse();
         customResponse.setData(categoriaService.getCategoriaById(id));
@@ -59,7 +57,7 @@ public class CategoriaController {
             throw new BlogAppException(HttpStatus.BAD_REQUEST, "Sin registro de ese id");
         } else {
             throw new BlogAppException(HttpStatus.OK, "ok", (Object) customResponse.getData());
-
+ 
         }
     }
 
@@ -70,7 +68,6 @@ public class CategoriaController {
      * @return
      */
     @PostMapping("")
-    @PreAuthorize("hasAuthority('admin')")
     public ResponseEntity<?> guardaCategoria(@Valid @RequestBody CategoriaEntity categoria) {
         CustomResponse customResponse = new CustomResponse();
         
@@ -91,7 +88,6 @@ public class CategoriaController {
      */
    
     @PutMapping("/{id}")
-    @PreAuthorize("hasAuthority('admin')")
     public ResponseEntity<?> updateCategoria(@RequestBody @Valid CategoriaEntity categoria,
             @PathVariable Long id) {
                 CustomResponse customResponse = new CustomResponse();
@@ -111,7 +107,6 @@ public class CategoriaController {
      * @return
      */
     @DeleteMapping("{id}")
-    @PreAuthorize("hasAuthority('admin')")
     public ResponseEntity<?> eliminarCategoria(@PathVariable Long id) {
         CustomResponse customResponse = new CustomResponse();
         Optional<CategoriaEntity> c = categoriaService.getCategoriaById(id);

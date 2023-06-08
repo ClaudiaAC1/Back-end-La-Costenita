@@ -35,7 +35,6 @@ public class RolController {
     private RolService rolService;
 
     @GetMapping()
-    @PreAuthorize("hasAnyAuthority('admin','cajero')")
     public CustomResponse getRol() {
         CustomResponse customResponse = new CustomResponse();
         customResponse.setData(rolService.getRols());
@@ -48,7 +47,6 @@ public class RolController {
      * @return
      */
     @GetMapping("/search-id/{id}")
-    @PreAuthorize("hasAnyAuthority('admin','cajero')")
     public CustomResponse getRolById(@PathVariable Long id) {
         CustomResponse customResponse = new CustomResponse();
         Optional<RolEntity> r = rolService.getRolById(id);
@@ -62,7 +60,6 @@ public class RolController {
     }
 
     @GetMapping("/search-name/{nombre}")
-    @PreAuthorize("hasAnyAuthority('admin','cajero')")
     public ResponseEntity<?> getRolByName(@PathVariable String nombre) {
         CustomResponse customResponse = new CustomResponse();
         Optional<RolEntity> r = rolService.getRolByNombre(nombre);
@@ -75,7 +72,6 @@ public class RolController {
     }
 
     @PostMapping("/")
-    @PreAuthorize("hasAuthority('admin')")
     public ResponseEntity<?> saveRol(@RequestBody @Valid RolEntity rol) {
         CustomResponse customResponse = new CustomResponse();
         rolService.saveRol(rol);
@@ -88,7 +84,6 @@ public class RolController {
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasAuthority('admin')")
     public ResponseEntity<?> updateRol(@RequestBody @Valid RolEntity rol,
             @PathVariable Long id) {
         CustomResponse customResponse = new CustomResponse();
@@ -103,7 +98,6 @@ public class RolController {
     }
 
     @DeleteMapping("{id}")
-    @PreAuthorize("hasAuthority('admin')")
     public ResponseEntity<?> deleteRol(@PathVariable Long id) {
         CustomResponse customResponse = new CustomResponse();
         Optional<RolEntity> c = rolService.getRolById(id);

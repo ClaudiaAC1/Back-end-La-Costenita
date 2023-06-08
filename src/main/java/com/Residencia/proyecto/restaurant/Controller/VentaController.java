@@ -53,10 +53,10 @@ public class VentaController {
     @PostMapping("/")
     public ResponseEntity<?> saveVenta(@RequestBody VentaDto venta) {
         CustomResponse customResponse = new CustomResponse();
-        VentaEntity ventaS =  new VentaEntity(venta.getNombreMesa(), venta.getNombreMesero());
+        VentaEntity ventaS =  new VentaEntity(venta.getNombreMesero(), venta.getNombreMesa());
         
         ventaService.save(ventaS);
-        customResponse.setData("Venta " + ventaS.getId() + " registrada correctamente");
+        customResponse.setData(ventaS.getId());
         customResponse.setHttpCode(HttpStatus.CREATED.value());
         customResponse.setMensage(HttpStatus.CREATED.name());
         return new ResponseEntity<>(customResponse, HttpStatus.CREATED);
