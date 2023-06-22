@@ -11,6 +11,8 @@ import com.Residencia.proyecto.restaurant.Entity.ProductoEntity;
 import com.Residencia.proyecto.restaurant.Repository.CategoriaDao;
 import com.Residencia.proyecto.restaurant.Repository.ProductoDao;
 import com.Residencia.proyecto.restaurant.Services.ProductoService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 @Service
 public class ProductoServiceImplements implements ProductoService {
@@ -50,6 +52,11 @@ public class ProductoServiceImplements implements ProductoService {
     @Override
     public Optional<ProductoEntity> getProductoById(Long id) {
         return productoDao.findById(id);
+    }
+
+    @Override
+    public Page<ProductoEntity> findAll(Pageable pageable) {
+        return productoDao.findAll(pageable);
     }
 
 }

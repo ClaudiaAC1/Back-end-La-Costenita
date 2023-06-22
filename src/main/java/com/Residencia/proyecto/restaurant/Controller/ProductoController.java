@@ -24,7 +24,7 @@ import jakarta.validation.Valid;
 
 import com.Residencia.proyecto.restaurant.Services.*;
 import com.Residencia.proyecto.restaurant.Exception.BlogAppException;
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.data.domain.Pageable;
 
 @RestController
 @RequestMapping("/product")
@@ -45,6 +45,15 @@ public class ProductoController {
     public CustomResponse listarProductos() {
         CustomResponse customResponse = new CustomResponse();
         customResponse.setData(productoService.getProductos());
+        return customResponse;
+
+    }
+    
+    @GetMapping("page")
+//    @PreAuthorize("hasAnyAuthority('admin','cajero')")
+    public CustomResponse listarProductosPage(Pageable pageable) {
+        CustomResponse customResponse = new CustomResponse();
+        customResponse.setData(productoService.findAll(pageable).getContent());
         return customResponse;
 
     }
