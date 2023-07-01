@@ -36,9 +36,9 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getUserById(@PathVariable Long id) {
+    public ResponseEntity<?> findUserById(@PathVariable Long id) {
         CustomResponse customResponse = new CustomResponse();
-        Optional<UserEntity> u = userService.getUserById(id);
+        Optional<UserEntity> u = userService.findUserById(id);
 
         if (!u.isPresent()) {
             throw new BlogAppException(HttpStatus.BAD_REQUEST, "Sin registro de ese Usuario");

@@ -13,6 +13,7 @@ import com.Residencia.proyecto.restaurant.Repository.ProductoDao;
 import com.Residencia.proyecto.restaurant.Services.ProductoService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Scheduled;
 
 @Service
 public class ProductoServiceImplements implements ProductoService {

@@ -15,7 +15,7 @@ import java.util.Optional;
 public interface UserService {
       public List<UserEntity> getUsers();
     
-    public Optional<UserEntity> getUserById(Long id);
+    public Optional<UserEntity> findUserById(Long id);
     
     public Optional<UserEntity> getUserByName(String name);
     

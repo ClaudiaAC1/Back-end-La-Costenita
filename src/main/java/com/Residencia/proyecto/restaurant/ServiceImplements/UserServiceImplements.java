@@ -33,7 +33,7 @@ public class UserServiceImplements implements UserService {
     }
 
     @Override
-    public Optional<UserEntity> getUserById(Long id) {
+    public Optional<UserEntity> findUserById(Long id) {
         return userDao.findById(id);
     }
 

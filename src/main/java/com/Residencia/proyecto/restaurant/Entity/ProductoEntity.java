@@ -70,5 +70,14 @@ public class ProductoEntity implements Serializable{
     public String getcategoriaName(){
         return categoria.getNombre();
     }
+    
+    public void resetVendidos(){
+        this.contador = 0;
+    }
+    
+    public void resetCancelados(){
+        this.cancelados = 0;
+    }
+            
 
 }
