@@ -34,16 +34,16 @@ public class InventarioEntity implements Serializable{
     
     public String nombre;    
     public String categoria;
-    public Integer cantidad;
+    public Double cantidad;
     public String unidad; ///kilos, botella...
     
     public String[] productos; ///listado productos(nombre), separados por comas
         
     public Byte status;
     
-    public Integer contador;
+    public Double contador;
 
-    public InventarioEntity(String nombre, String categoria, Integer cantidad, String unidad, String[] productos, Byte status, Integer contador) {
+    public InventarioEntity(String nombre, String categoria, Double cantidad, String unidad, String[] productos, Byte status, Double contador) {
         this.nombre = nombre;
         this.categoria = categoria;
         this.cantidad = cantidad;

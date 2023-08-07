@@ -12,6 +12,7 @@ import com.Residencia.proyecto.restaurant.Utils.CustomResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -28,7 +29,7 @@ public class MainController {
 
   
 
-    @PostMapping("/main/user")
+    @GetMapping("/main/user")
     public ResponseEntity<?> saveUser() {
         CustomResponse customResponse = new CustomResponse();
         UserEntity user = UserEntity.builder()
