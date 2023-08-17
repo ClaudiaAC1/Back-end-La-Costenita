@@ -27,7 +27,14 @@ public class MainController {
     @Autowired
     private UserService userService;
 
-  
+    @GetMapping("main/hi")
+    public ResponseEntity<?> hi() {
+        CustomResponse customResponse = new CustomResponse();
+    
+        customResponse.setData("usuarios creado exitosamente");
+        return new ResponseEntity<>(customResponse, HttpStatus.OK);
+    }
+
 
     @GetMapping("/main/user")
     public ResponseEntity<?> saveUser() {
